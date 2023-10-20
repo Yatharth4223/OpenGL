@@ -94,6 +94,11 @@ void Mesh::Cleanup()
 void Mesh::Render(glm::mat4 _wvp)
 {
 	glUseProgram(m_shader->GetProgramID());
+	m_shader->SetVec3("AmbientLight", { 0.1f, 0.1f, 0.1f });
+	m_shader->SetVec3("DiffuseColor", { 1.0f, 1.0f, 1.0f});
+	//m_shader->SetVec3("LightDirection", { 1.0f, 0.5f, 0.0f });
+	//m_shader->SetVec3("LightColor", { 0.5f, 0.9f, 0.5f });
+
 
 	glEnableVertexAttribArray(m_shader->GetAttrVertices());
 	glVertexAttribPointer(m_shader->GetAttrVertices(),
@@ -119,7 +124,7 @@ void Mesh::Render(glm::mat4 _wvp)
 		8 * sizeof(float),
 		(void*)(6 * sizeof(float)));
 
-	m_rotation.y += 0.005f;
+
 	glm::mat4 transform = glm::rotate(_wvp, m_rotation.y, glm::vec3(0, 1, 0));
 	glUniformMatrix4fv(m_shader->GetAttrWVP(), 1, GL_FALSE, &transform[0][0]);
 
