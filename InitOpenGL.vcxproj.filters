@@ -87,6 +87,8 @@
   <ItemGroup>
     <None Include="SimpleVertexShader.vertexshader" />
     <None Include="SimpleFragmentShader.fragmentshader" />
+    <None Include="diffuse.vertexshader" />
+    <None Include="diffuse.fragmentshader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\Textures\Wood.jpg">
