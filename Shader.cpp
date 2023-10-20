@@ -5,6 +5,7 @@ Shader::Shader()
 	m_programID = 0;
 	m_attrVertices = 0;
 	m_attrColors = 0;
+	m_attrNormals = 0;
 	m_attrTexCoords = 0;
 	m_sampler1 = 0;
 	m_sampler2 = 0;
@@ -18,10 +19,20 @@ void Shader::Cleanup()
 	glDeleteProgram(m_programID);
 }
 
+void Shader::SetVec3(const char* _name, glm::vec3 _value)
+{
+	GLint loc = glGetUniformLocation(m_programID, _name);
+	if (loc != -1)
+	{
+		glUniform3fv(loc, 1, &_value[0]);
+	}
+}
+
 void Shader::LoadAttributes()
 {
 	m_attrVertices = glGetAttribLocation(m_programID, "vertices");
 	m_attrColors = glGetAttribLocation(m_programID, "colors");
+	m_attrNormals = glGetAttribLocation(m_programID, "normals");
 	m_attrTexCoords = glGetAttribLocation(m_programID, "texCoords");
 	m_attrWVP = glGetUniformLocation(m_programID, "WVP");
 	m_sampler1 = glGetUniformLocation(m_programID, "sampler1");
