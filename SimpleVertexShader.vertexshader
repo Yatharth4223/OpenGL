@@ -1,0 +1,17 @@
+#version 330 
+
+in vec3 vertices; // Value sent from application to this attribute
+in vec3 colors;
+in vec2 texCoords;
+
+uniform mat4 WVP;
+
+out vec3 retColor;
+out vec2 retTexCoord;
+
+void main()
+{
+	gl_Position = WVP * vec4(vertices, 1.0); //Pass-through shader, pass positions to next shader
+	retColor = colors;
+	retTexCoord = texCoords;      
+}
