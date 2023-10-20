@@ -16,6 +16,7 @@ public:
 	void Create(Shader* _shader);
 	void Cleanup();
 	void Render(glm::mat4 _wvp);
+	void GetSomething();
 
 private:
 
@@ -29,6 +30,7 @@ private:
 	std::vector<GLubyte> m_indexData;
 	glm::vec3 m_position;
 	glm::vec3 m_rotation;
+
 
 };
 
