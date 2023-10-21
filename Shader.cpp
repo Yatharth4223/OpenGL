@@ -106,3 +106,12 @@ void Shader::LoadShaders(const char* _vertexFilePath, const char* _fragmentFileP
 	CreateShaderProgram(_vertexFilePath, _fragmentFilePath);
 	LoadAttributes();
 }
+
+void Shader::SetMat4(const char* _name, glm::mat4 _value)
+{
+	GLint loc = glGetUniformLocation(m_programID ,_name);
+	if (loc != -1)
+	{
+		glUniformMatrix4fv(loc, 1, GL_FALSE, &_value[0][0]);
+	}
+}
