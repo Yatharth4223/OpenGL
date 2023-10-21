@@ -3,9 +3,12 @@
 in vec3 retNormal;
 in vec2 retTexCoord;
 in vec3 retFragPos;
+in vec3 retViewDirection;
 
 out vec4 FragColor;
 
+uniform float SpecularStrength;
+uniform vec3 SpecularColor;
 uniform vec3 LightPosition;
 uniform vec3 LightColor;
 uniform vec3 AmbientLight;
@@ -15,8 +18,10 @@ uniform sampler2D sampler2;
 
 void main()
 {
-	vec3 lightDir = normalize(retFragPos - LightPosition);
+	vec3 lightDir = normalize(LightPosition - retFragPos );
 	vec3 lambertian = dot(retNormal,lightDir) * LightColor;
-	vec3 clampOutput = clamp(lambertian + AmbientLight, 0.0f, 1.0f) * DiffuseColor;
-	FragColor = vec4(clampOutput, 1.0f) * texture(sampler1, retTexCoord);
+	vec3 refl = reflect(-lightDir, retNormal );
+	vec3 specular = pow(max(dot(refl,retViewDirection), 0.0f), SpecularStrength) * SpecularColor;
+	vec3 color = (lambertian + specular + AmbientLight) * DiffuseColor;
+	FragColor = vec4(color, 1.0f) * texture(sampler1, retTexCoord);
 }

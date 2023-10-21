@@ -48,7 +48,7 @@ void GameController::RunGame()
 	m_meshBox.Create(&m_shaderDiffuse);
 	m_meshBox.SetLightColor({ 0.5f, 0.9f, 0.5f });
 	m_meshBox.SetLightPosition(m_meshLight.GetPosition());
-
+	m_meshBox.SetCameraPosition(m_camera.GetPosition());
 
 	GLFWwindow* win = WindowController::GetInstance().GetWindow();
 	do
