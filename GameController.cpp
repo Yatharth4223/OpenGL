@@ -41,7 +41,7 @@ void GameController::RunGame()
 
 	m_meshLight = Mesh(); //creating object on stack
 	m_meshLight.Create(&m_shaderColor);
-	m_meshLight.SetPosition({ 1, 0.5f, 0.5f });
+	m_meshLight.SetPosition({ 1, -0.5f, 0.0f });
 	m_meshLight.SetScale({ 0.1f, 0.1f, 0.1f});
 
 	m_meshBox = Mesh(); //creating object on stack
@@ -53,15 +53,6 @@ void GameController::RunGame()
 	GLFWwindow* win = WindowController::GetInstance().GetWindow();
 	do
 	{
-		//System::Windows::Forms::Application::DoEvents(); //Handle C++/CLI form events
-
-		//GLint loc = glGetUniformLocation(m_shader.GetProgramID(), "RenderRedChannel");
-		//glUniform1i(loc, (int)InitOpenGL::ToolWindow::RenderRedChannel);
-		//loc = glGetUniformLocation(m_shader.GetProgramID(), "RenderGreenChannel");
-		//glUniform1i(loc, (int)InitOpenGL::ToolWindow::RenderGreenChannel);
-		//loc = glGetUniformLocation(m_shader.GetProgramID(), "RenderBlueChannel");
-		//glUniform1i(loc, (int)InitOpenGL::ToolWindow::RenderBlueChannel);
-
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear the screen
 		m_meshBox.Render(m_camera.GetProjection() * m_camera.GetView());
 		m_meshLight.Render(m_camera.GetProjection() * m_camera.GetView());

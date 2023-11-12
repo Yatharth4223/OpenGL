@@ -30,6 +30,7 @@ void Texture::LoadTexture(string _fileName)
 	GLubyte* data = stbi_load(_fileName.c_str(), &m_width, &m_height, &m_channels, 0);
 	M_ASSERT(data != nullptr, "Failed to load texture");
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(data);
