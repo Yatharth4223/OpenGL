@@ -40,10 +40,15 @@ void GameController::RunGame()
 	m_shaderDiffuse = Shader();
 	m_shaderDiffuse.LoadShaders("diffuse.vertexshader", "diffuse.fragmentshader");
 
-	m_meshLight = Mesh(); //creating object on stack
-	m_meshLight.Create(&m_shaderColor);
-	m_meshLight.SetPosition({ 0.5f, 0.0f, -0.5f });
-	m_meshLight.SetScale({ 0.1f, 0.1f, 0.1f});
+	for (int count = 0; count < 4; count++)
+	{
+		Mesh m = Mesh();
+		m.Create(&m_shaderColor);
+		m.SetPosition({ 0.5f + (float)count / 10.0f, 0.0f, -0.5f});
+		m.SetColor({glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f) });
+		m.SetScale({ 0.1f, 0.1f,0.1f });
+		Mesh::Lights.push_back(m);
+	}
 
 	for (int col = 0; col < 10; col++)
 	{

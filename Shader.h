@@ -20,7 +20,6 @@ public:
 	GLuint GetSampler2() { return m_sampler2; }
 	GLuint GetAttrWVP() { return m_attrWVP; }
 
-
 	//Methods
 	void LoadShaders(const char* _vertexFilePath, const char* _fragmentFilePath);
 	void Cleanup();
