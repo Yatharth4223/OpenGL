@@ -115,6 +115,8 @@ void Mesh::Render(glm::mat4 _pv)
 
 void Mesh::BindAttributes()
 {
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+
 	glEnableVertexAttribArray(m_shader->GetAttrVertices());
 	glVertexAttribPointer(m_shader->GetAttrVertices(),
 		3,
@@ -140,7 +142,6 @@ void Mesh::BindAttributes()
 		(void*)(6 * sizeof(float)));
 
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 }
 
 void Mesh::CalculateTransform()

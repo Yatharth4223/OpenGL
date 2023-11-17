@@ -38,7 +38,7 @@ uniform Light light[NR_LIGHTS];
 void main()
 {
 	vec4 finalColor = vec4(0);
-	for(int i = 0; i < NR_LIGHTS;i++)
+	for(int i = 0; i < NR_LIGHTS  ;i++)
 	{
 		vec3 lightDir = normalize(light[i].position - retFragPos );
 		float a = cos(light[i].coneAngle);

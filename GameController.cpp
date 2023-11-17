@@ -46,7 +46,7 @@ void GameController::RunGame()
 		m.Create(&m_shaderColor);
 		m.SetPosition({ 0.5f + (float)count / 10.0f, 0.0f, -0.5f});
 		m.SetColor({glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f), glm::linearRand(0.0f, 1.0f) });
-		m.SetScale({ 0.1f, 0.1f,0.1f });
+		m.SetScale({ 0.1f, 0.1f, 0.1f });
 		Mesh::Lights.push_back(m);
 	}
 
