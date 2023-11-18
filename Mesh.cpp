@@ -141,7 +141,6 @@ void Mesh::BindAttributes()
 		8 * sizeof(float),
 		(void*)(6 * sizeof(float)));
 
-
 }
 
 void Mesh::CalculateTransform()
@@ -167,7 +166,6 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 		m_shader->SetVec3(Concat("light[", i, "].ambientColor").c_str(), { 0.1f, 0.1f, 0.1f });
 		m_shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), Lights[i].GetColor());
 		m_shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), { 3.0f, 3.0f, 3.0f });
-
 
 		m_shader->SetVec3(Concat("light[", i, "].position").c_str(), Lights[i].GetPosition());
 		m_shader->SetVec3(Concat("light[", i, "].direction").c_str(), glm::normalize(glm::vec3({ 0.0f + i * 0.1f, 0, 0.0f + i * 0.1f}) - Lights[i].GetPosition()));

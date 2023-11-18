@@ -1,4 +1,5 @@
 #version 330
+#define NR_LIGHTS 4
 
 in vec3 retNormal;
 in vec2 retTexCoord;
@@ -32,7 +33,6 @@ struct Light
 };
  
 uniform Material material;
-#define NR_LIGHTS 4
 uniform Light light[NR_LIGHTS];
 
 void main()
