@@ -4,6 +4,8 @@
 //include standard headers
 #include <vector> //vector is like list in c++
 #include <string>
+#include <map>
+#include <iostream>
 #include <fstream>
 
 //Windows specific includes and defines
@@ -19,6 +21,10 @@
 #include <glm/glm.hpp> //including glm
 #include <glm/ext.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+//font includes
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 #include "Resolution.h"
 #include "Singleton.h"

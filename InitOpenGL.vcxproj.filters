@@ -45,6 +45,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Fonts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -77,6 +80,9 @@
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Fonts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleVertexShader.vertexshader" />
@@ -85,5 +91,7 @@
     <None Include="diffuse.fragmentshader" />
     <None Include="Color.fragmentshader" />
     <None Include="Color.vertexshader" />
+    <None Include="Font.fragmentshader" />
+    <None Include="Font.vertexshader" />
   </ItemGroup>
 </Project>
