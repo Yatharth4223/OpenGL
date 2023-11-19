@@ -1,5 +1,4 @@
 #version 330
-#define NR_LIGHTS 4
 
 in vec3 retNormal;
 in vec2 retTexCoord;
@@ -33,6 +32,7 @@ struct Light
 };
  
 uniform Material material;
+#define NR_LIGHTS 1
 uniform Light light[NR_LIGHTS];
 
 void main()
@@ -41,27 +41,15 @@ void main()
 	for(int i = 0; i < NR_LIGHTS  ;i++)
 	{
 		vec3 lightDir = normalize(light[i].position - retFragPos );
-		float a = cos(light[i].coneAngle);
-		float d = dot(normalize(light[i].direction), -lightDir);
-		if (a < d)
-		{
-			float lambertianStrength = dot(lightDir,retNormal);
-			vec3 refl = reflect(-lightDir, retNormal);
-			float specularStrength = pow(max(dot(retViewDirection,refl), 0.0f), material.specularStrength);
-			float distance = length(light[i].position - retFragPos);
-			float att = 1.0f /(light[i].constant + light[i].linear * distance + light[i].quadratic * (distance * distance));
-			att *= 1 - pow(a / d, light[i].falloff);
-
-			vec3 ambient = texture(material.diffuseTexture, retTexCoord).rgb * light[i].ambientColor * att;
-			vec3 lambertian = lambertianStrength * texture(material.diffuseTexture, retTexCoord).rgb * light[i].diffuseColor * att;
-			vec3 specular = specularStrength * texture(material.specularTexture, retTexCoord).rgb * light[i].specularColor * att;
-			FragColor = vec4(ambient + lambertian + specular, 1.0f);
-		}
-		else
-		{
-			vec3 ambient = texture(material.diffuseTexture, retTexCoord).rgb * light[i].ambientColor / NR_LIGHTS;
-			finalColor += vec4(ambient,1.0f);
-		}
+		float lambertianStrength = dot(lightDir,retNormal);
+		vec3 refl = reflect(-lightDir, retNormal);
+		float specularStrength = pow(max(dot(retViewDirection,refl), 0.0f), material.specularStrength);
+			
+		vec3 ambient = texture(material.diffuseTexture, retTexCoord).rgb * light[i].ambientColor / NR_LIGHTS;
+		vec3 lambertian = lambertianStrength * texture(material.diffuseTexture, retTexCoord).rgb * light[i].diffuseColor ;
+		vec3 specular = specularStrength * texture(material.specularTexture, retTexCoord).rgb * light[i].specularColor ;
+		finalColor += vec4(ambient + lambertian + specular, 1.0f);
 	}
+
 	FragColor = finalColor;
 }
