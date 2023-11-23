@@ -22,7 +22,7 @@ private:
 	Shader m_shaderDiffuse;
 	Shader m_shaderFont;
 	Camera m_camera;
-	vector<Mesh> m_meshBoxes;
+	vector<Mesh> m_meshes;
 	Mesh m_meshLight;
 };
 
