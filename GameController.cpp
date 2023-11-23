@@ -67,12 +67,12 @@ void GameController::RunGame()
 	box.SetPosition({ -1.0f, -1.0f, -1.0f });
 	m_meshes.push_back(box);
 
-	Mesh plane = Mesh();
-	plane.Create(&m_shaderDiffuse, "./Assets/Models/Plane.obj");
-	plane.SetCameraPosition(m_camera.GetPosition());
-	plane.SetScale({ 0.3f,0.3f,0.3f });
-	plane.SetPosition({ 0.0f, 0.0f, 0.0f });
-	m_meshes.push_back(plane);
+	//Mesh plane = Mesh();
+	//plane.Create(&m_shaderDiffuse, "./Assets/Models/Plane.obj");
+	//plane.SetCameraPosition(m_camera.GetPosition());
+	//plane.SetScale({ 0.3f,0.3f,0.3f });
+	//plane.SetPosition({ 0.0f, 0.0f, 0.0f });
+	//m_meshes.push_back(plane);
 
 	Fonts f = Fonts();
 	f.Create(&m_shaderFont, "arial.ttf", 100);
