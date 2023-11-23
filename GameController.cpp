@@ -24,7 +24,7 @@ void GameController::Initialize()
 	M_ASSERT(glewInit() == GLEW_OK, "Failed to initialise GLEW.");
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 	glClearColor(0.1f, 0.1f, 0.1f, 0.0f); //Grey Background
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	srand(time(0));
@@ -60,13 +60,20 @@ void GameController::RunGame()
 	teapot.SetPosition({ 0.0f, 0.0f, 0.0f });
 	m_meshBoxes.push_back(teapot);
 
+	Mesh box = Mesh();
+	box.Create(&m_shaderDiffuse, "./Assets/Models/Cube.obj");
+	box.SetCameraPosition(m_camera.GetPosition());
+	box.SetScale({ 0.5f,0.5f,0.5f });
+	box.SetPosition({ -1.0f, -1.0f, -1.0f });
+	m_meshBoxes.push_back(box);
+
 	Fonts f = Fonts();
 	f.Create(&m_shaderFont, "arial.ttf", 100);
 
 	GLFWwindow* win = WindowController::GetInstance().GetWindow();
 	do
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear the screen
+		glClear(GL_COLOR_BUFFER_BIT /*| GL_DEPTH_BUFFER_BIT*/); //Clear the screen
 		for (unsigned int count = 0; count < m_meshBoxes.size(); count++)
 		{
 			m_meshBoxes[count].Render(m_camera.GetProjection() * m_camera.GetView());
