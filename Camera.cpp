@@ -9,7 +9,7 @@ Camera::Camera()
 
 Camera::Camera(Resolution _screenResolution)
 {
-	m_position = { 5,5,5 };
+	m_position = { 5,5, 5};
 
 	m_projection = glm::perspective(glm::radians(45.0f),
 		(float)_screenResolution.m_width /
