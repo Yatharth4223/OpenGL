@@ -5,11 +5,17 @@ Camera::Camera()
 	m_projection = {};
 	m_view = {};
 	m_position = {};
+	m_lookAt = glm::vec3();
+	m_rotation = glm::vec3();
+	m_angle = 0;
 }
 
 Camera::Camera(Resolution _screenResolution)
 {
 	m_position = { 5,5, 5};
+	m_lookAt = { 0,0,0 };
+	m_rotation = { 0,0,0 };
+	m_angle = 0;
 
 	m_projection = glm::perspective(glm::radians(45.0f),
 		(float)_screenResolution.m_width /
@@ -27,4 +33,17 @@ Camera::Camera(Resolution _screenResolution)
 Camera::~Camera()
 {
 
+}
+
+void Camera::Rotate()
+{
+	m_angle += 0.1f;
+	m_lookAt.x = cos(glm::radians(m_angle)) * 100;
+	m_lookAt.y = sin(glm::radians(m_angle)) * 100;
+
+	m_view = glm::lookAt(
+		m_position,
+		m_lookAt,
+		glm::vec3(0, 1, 0)
+	);
 }

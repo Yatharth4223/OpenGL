@@ -12,6 +12,7 @@ public:
 	GLuint GetTexture() { return m_texture; }
 	
 	void LoadTexture(string _fileName);
+	void LoadCubeMap(vector<std::string> _faces);
 	void Cleanup();
 
 private:
