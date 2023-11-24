@@ -37,8 +37,7 @@ void GameController::Initialize()
 void GameController::RunGame()
 {
 	//Show the C++/CLI tool window
-	InitOpenGL::ToolWindow^ Window = gcnew InitOpenGL::ToolWindow();
-	Window->Hide();
+	InitOpenGL::ToolWindow^ window = gcnew InitOpenGL::ToolWindow();
 
 #pragma region SetupShaders
 	//Create and compile our GLSL program from the shaders
@@ -46,51 +45,33 @@ void GameController::RunGame()
 	m_shaderColor.LoadShaders("Color.vertexshader", "Color.fragmentshader");
 	m_shaderDiffuse = Shader();
 	m_shaderDiffuse.LoadShaders("diffuse.vertexshader", "diffuse.fragmentshader");
-	m_shaderSkybox = Shader();
-	m_shaderSkybox.LoadShaders("Skybox.vertexshader","Skybox.fragmentshader");
+	//shader for first part
+	m_shaderMoveLight = Shader();
+	m_shaderMoveLight.LoadShaders("Movelight.vertexshader", "Movelight.fragmentshader");
+	
+	//shader for font
 	m_shaderFont = Shader();
-	m_shaderFont.LoadShaders("Font.vertexshader","Font.fragmentshader");
-
+	m_shaderFont.LoadShaders("Font.vertexshader", "Font.fragmentshader");
 #pragma endregion
 
 #pragma region CreateMeshes
+	if (InitOpenGL::ToolWindow::isMovingLight)
+	{
+		Mesh light = Mesh();
+		light.Create(&m_shaderColor, "./Assets/Models/Exercise2/Sphere.obj");
+		light.SetPosition({ 0.0f, 0.0f, 0.1f });
+		light.SetColor({ 1.0f, 1.0f, 1.0f });
+		light.SetScale({ 0.01f,0.01f,0.01f });
+		Mesh::Lights.push_back(light);
 
-	Mesh light = Mesh();
-	light.Create(&m_shaderColor, "./Assets/Models/Teapot2.obj");
-	light.SetPosition({ 1.0f, 0.0f, 0.0f });
-	light.SetColor({ 1.0f, 1.0f, 1.0f });
-	light.SetScale({ 0.01f,0.01f,0.01f });
-	Mesh::Lights.push_back(light);
-
-	Mesh box = Mesh();
-	box.Create(&m_shaderDiffuse, "./Assets/Models/Cube.obj");
-	box.SetCameraPosition(m_camera.GetPosition());
-	box.SetScale({ 0.5f,0.5f,0.5f });
-	box.SetPosition({ 1.0f, 0.0f, 5.0f });
-	m_meshes.push_back(box);
-
-	Skybox skybox = Skybox();
-	skybox.Create(&m_shaderSkybox, "./Assets/Models/Skybox.obj",
-		{ "./Assets/Textures/Skybox/right.jpg",
-		"./Assets/Textures/Skybox/left.jpg",
-		"./Assets/Textures/Skybox/top.jpg",
-		"./Assets/Textures/Skybox/bottom.jpg",
-		"./Assets/Textures/Skybox/front.jpg",
-		"./Assets/Textures/Skybox/back.jpg" });
-	//Mesh plane = Mesh();
-	//plane.Create(&m_shaderDiffuse, "./Assets/Models/Plane.obj");
-	//plane.SetCameraPosition(m_camera.GetPosition());
-	//plane.SetScale({ 0.3f,0.3f,0.3f });
-	//plane.SetPosition({ 0.0f, 0.0f, 0.0f });
-	//m_meshes.push_back(plane);
-
-	//Mesh window = Mesh();
-	//window.Create(&m_shaderDiffuse, "./Assets/Models/Window.obj");
-	//window.SetCameraPosition(m_camera.GetPosition());
-	//window.SetScale({ 0.1f,0.1f,0.1f });
-	//window.SetPosition({ 0.0f, 0.0f, 0.0f });
-	//m_meshes.push_back(window);
-
+		Mesh box = Mesh();
+		box.Create(&m_shaderMoveLight, "./Assets/Models/Exercise2/Teapot.obj");
+		box.SetCameraPosition(m_camera.GetPosition());
+		box.SetScale({ 0.5f,0.5f,0.5f });
+		box.SetPosition({ 0.0f, 0.0f, 0.0f });
+		m_meshes.push_back(box);
+	}
+	
 #pragma endregion
 
 	Fonts f = Fonts();
@@ -104,7 +85,6 @@ void GameController::RunGame()
 
 		m_camera.Rotate();
 		glm::mat4 view = glm::mat4(glm::mat3(m_camera.GetView()));
-		skybox.Render(m_camera.GetProjection() * view);
 		for (unsigned int count = 0; count < m_meshes.size(); count++)
 		{
 			m_meshes[count].Render(m_camera.GetProjection() * m_camera.GetView());
@@ -129,8 +109,7 @@ void GameController::RunGame()
 	{
 		m_meshes[count].Cleanup();
 	}
-	skybox.Cleanup();
 	m_shaderDiffuse.Cleanup();
 	m_shaderColor.Cleanup();
-	m_shaderSkybox.Cleanup();
+	m_shaderMoveLight.Cleanup();
 }

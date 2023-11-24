@@ -1,6 +1,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include <OBJ_Loader.h>
+#include "ToolWindow.h"
 
 vector<Mesh> Mesh::Lights;
 
@@ -55,9 +56,9 @@ void Mesh::Create(Shader* _shader, string _file)
 	}
 
 	m_texture = Texture();
-	m_texture.LoadTexture("./Assets/Textures/" + diffuseMap);	
+	m_texture.LoadTexture("./Assets/Textures/Exercise2/" + diffuseMap);	
 	m_texture2 = Texture();
-	m_texture2.LoadTexture("./Assets/Textures/" + diffuseMap);
+	m_texture2.LoadTexture("./Assets/Textures/Exercise2/" + diffuseMap);
 
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
@@ -143,7 +144,9 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 
 		m_shader->SetVec3(Concat("light[", i, "].ambientColor").c_str(), { 0.1f, 0.1f, 0.1f });
 		m_shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), Lights[i].GetColor());
-		m_shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), { 3.0f, 3.0f, 3.0f });
+
+		glm::vec3 specColor = { InitOpenGL::ToolWindow::specularColorR ,InitOpenGL::ToolWindow::specularColorG ,InitOpenGL::ToolWindow::specularColorB };
+		m_shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), specColor);
 
 		m_shader->SetVec3(Concat("light[", i, "].position").c_str(), Lights[i].GetPosition());
 		m_shader->SetVec3(Concat("light[", i, "].direction").c_str(), glm::normalize(glm::vec3({ 0.0f + i * 0.1f, 0, 0.0f + i * 0.1f}) - Lights[i].GetPosition()));
@@ -153,7 +156,7 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 	}
 
 	//configure material
-	m_shader->SetFloat("material.specularStrength", 8);
+	m_shader->SetFloat("material.specularStrength", InitOpenGL::ToolWindow::specularStrength);
 	m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0,0, m_texture.GetTexture());
 	m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1,1, m_texture2.GetTexture());
 
