@@ -37,6 +37,11 @@ uniform Light light[NR_LIGHTS];
 
 void main()
 {
+	if (texture(material.diffuseTexture, retTexCoord).a == 0)
+	{
+		discard;
+	}
+
 	vec4 finalColor = vec4(0);
 	for(int i = 0; i < NR_LIGHTS  ;i++)
 	{
