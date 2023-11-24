@@ -56,9 +56,9 @@ void Mesh::Create(Shader* _shader, string _file)
 	}
 
 	m_texture = Texture();
-	m_texture.LoadTexture("./Assets/Textures/Exercise2/" + diffuseMap);	
+	m_texture.LoadTexture("./Assets/Textures/" + diffuseMap);	
 	m_texture2 = Texture();
-	m_texture2.LoadTexture("./Assets/Textures/Exercise2/" + diffuseMap);
+	m_texture2.LoadTexture("./Assets/Textures/" + diffuseMap);
 
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
