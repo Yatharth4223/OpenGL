@@ -47,14 +47,14 @@ void GameController::RunGame()
 	m_shaderFont.LoadShaders("Font.vertexshader","Font.fragmentshader");
 
 	Mesh light = Mesh();
-	light.Create(&m_shaderColor, "./Assets/Models/Teapot.obj");
+	light.Create(&m_shaderColor, "./Assets/Models/Teapot2.obj");
 	light.SetPosition({ 1.0f, 0.0f, 0.0f });
 	light.SetColor({ 1.0f, 1.0f, 1.0f });
 	light.SetScale({ 0.01f,0.01f,0.01f });
 	Mesh::Lights.push_back(light);
 
 	Mesh teapot = Mesh();
-	teapot.Create(&m_shaderDiffuse, "./Assets/Models/Teapot.obj");
+	teapot.Create(&m_shaderDiffuse, "./Assets/Models/Teapot2.obj");
 	teapot.SetCameraPosition(m_camera.GetPosition());
 	teapot.SetScale({ 0.02f,0.02f,0.02f });
 	teapot.SetPosition({ 0.0f, 0.0f, 0.0f });
@@ -67,12 +67,12 @@ void GameController::RunGame()
 	box.SetPosition({ -1.0f, -1.0f, -1.0f });
 	m_meshes.push_back(box);
 
-	//Mesh plane = Mesh();
-	//plane.Create(&m_shaderDiffuse, "./Assets/Models/Plane.obj");
-	//plane.SetCameraPosition(m_camera.GetPosition());
-	//plane.SetScale({ 0.3f,0.3f,0.3f });
-	//plane.SetPosition({ 0.0f, 0.0f, 0.0f });
-	//m_meshes.push_back(plane);
+	Mesh plane = Mesh();
+	plane.Create(&m_shaderDiffuse, "./Assets/Models/Plane.obj");
+	plane.SetCameraPosition(m_camera.GetPosition());
+	plane.SetScale({ 0.3f,0.3f,0.3f });
+	plane.SetPosition({ 0.0f, 0.0f, 0.0f });
+	m_meshes.push_back(plane);
 
 	Fonts f = Fonts();
 	f.Create(&m_shaderFont, "arial.ttf", 100);
