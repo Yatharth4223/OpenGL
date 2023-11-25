@@ -6,6 +6,8 @@
 
 Shader GameController::m_MoveToSphere;
 Camera GameController::m_camera;
+vector<Mesh> GameController::boxes;
+
 
 GameController::GameController()
 {
@@ -195,9 +197,23 @@ void GameController::RunGame()
 				Mesh::Lights[count].Render(m_camera.GetProjection() * m_camera.GetView());
 			}
 			glm::mat4 view = glm::mat4(glm::mat3(m_camera.GetView()));
-			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
+			for (unsigned int count = 0; count < GameController::boxes.size(); count++)
 			{
-				Mesh::m_meshes[count].Render(m_camera.GetProjection() * m_camera.GetView());
+				glm::vec3 position = GameController::boxes[count].GetPosition();
+				position.x *= (1.0f - 0.05f);
+				position.y *= (1.0f - 0.05f);
+				position.z *= (1.0f - 0.05f);
+
+				position.x = std::max(position.x, 0.0f);
+				position.y = std::max(position.y, 0.0f);
+				position.z = std::max(position.z, 0.0f);
+
+				if (position.x == 0 && position.y == 0 && position.z == 0)
+				{
+					GameController::boxes[count].Cleanup();
+				}
+				Mesh::m_meshes[count].Render(m_camera.GetProjection()* m_camera.GetView());
+				GameController::boxes[count].Render(m_camera.GetProjection() * m_camera.GetView());
 			}
 
 		}
@@ -275,10 +291,10 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 			Mesh box = Mesh();
 			box.Create(&GameController::m_MoveToSphere, "./Assets/Models/Exercise2/Cube.obj", "Cube");
 			box.SetCameraPosition(GameController::m_camera.GetPosition());
-			box.SetScale({ 0.5f,0.5f,0.5f });
+			box.SetScale({ 0.1f,0.1f,0.1f });
 			box.SetPosition({ x, y, z });
 			box.isVisible = true;
-			Mesh::m_meshes.push_back(box);
+			GameController::boxes.push_back(box);
 	#pragma endregion Adding A Box
 		}
 		else 

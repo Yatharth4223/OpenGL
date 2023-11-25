@@ -233,7 +233,7 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 			m_shader->SetFloat(Concat("light[", i, "].coneAngle").c_str(), glm::radians(5.0f));
 			m_shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 200);
 		}
-		m_shader->SetFloat("material.specularStrength", InitOpenGL::ToolWindow::specularStrength);
+		m_shader->SetFloat("material.specularStrength", 8);
 
 	}
 
