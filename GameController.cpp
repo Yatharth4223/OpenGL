@@ -173,9 +173,23 @@ void GameController::RunGame()
 			}
 		}
 		else {
+
+			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
+			{
+				Mesh::m_meshes[count].Cleanup();
+			}
+
+			Mesh box = Mesh();
+			box.Create(&m_MoveToSphere, "./Assets/Models/Exercise2/SphereCube.obj");
+			box.SetCameraPosition(m_camera.GetPosition());
+			box.SetScale({ 0.5f,0.5f,0.5f });
+			box.SetPosition({ 0.0f, 0.0f, 0.0f });
+			box.isVisible = true;
+			Mesh::m_meshes.push_back(box);
+
 			glfwSetMouseButtonCallback(win, mouse_button_callback);
 
-			Mesh::Lights[0].SetPosition({ -10,5,0.1 });
+			Mesh::Lights[0].SetPosition({ -30,5,0.1 });
 			for (unsigned int count = 0; count < Mesh::Lights.size(); count++)
 			{
 				Mesh::Lights[count].Render(m_camera.GetProjection() * m_camera.GetView());
