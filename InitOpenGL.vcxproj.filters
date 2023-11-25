@@ -103,5 +103,9 @@
     <None Include="Skybox.vertexshader" />
     <None Include="Movelight.vertexshader" />
     <None Include="Movelight.fragmentshader" />
+    <None Include="ColorByPosition.vertexshader" />
+    <None Include="ColorByPosition.fragmentshader" />
+    <None Include="MoveToSphere.vertexshader" />
+    <None Include="MoveToSphere.fragmnetshader" />
   </ItemGroup>
 </Project>

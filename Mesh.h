@@ -30,6 +30,8 @@ public:
 
 	//Members
 	static vector<Mesh> Lights;
+	static vector<Mesh> m_meshes;
+	bool isVisible;
 	
 private:
 

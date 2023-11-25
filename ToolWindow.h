@@ -21,9 +21,9 @@ namespace InitOpenGL {
 		static bool isMovingLight = true;
 		static bool resetLightPosition = false;
 		static int specularStrength = 0;
-		static int specularColorR = 0;
-		static int specularColorG = 0;
-		static int specularColorB = 0;
+		static double specularColorR = 0;
+		static double specularColorG = 0;
+		static double specularColorB = 0;
 		static bool isColoringByPosition = false;
 		static bool resetTeapotPosition = false;
 		static bool isMovingCubesToSpheres = false;
@@ -32,7 +32,10 @@ namespace InitOpenGL {
 		ToolWindow(void)
 		{
 			InitializeComponent();
-
+			SpecularStrengthReading->Text = SpecularStrengthTrackBar->Value.ToString();
+			SpecularColorR->Text = SpecularRtrackBar->Value.ToString();
+			SpecularColorG->Text = SpecularGTrackBar->Value.ToString();
+			SpecularColorB->Text = SpecularColorBTrackBar->Value.ToString();
 		}
 
 	protected:
@@ -102,7 +105,7 @@ namespace InitOpenGL {
 		}
 		private: System::Void SpecularRtrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 			SpecularColorR->Text = SpecularRtrackBar->Value.ToString();
-			specularColorR = SpecularRtrackBar->Value;
+			specularColorR = (double) SpecularRtrackBar->Value /100;
 
 		}
 		private: System::Void SpecularGTrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
@@ -113,6 +116,14 @@ namespace InitOpenGL {
 		private: System::Void SpecularColorBTrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 			SpecularColorB->Text = SpecularColorBTrackBar->Value.ToString();
 			specularColorB = SpecularColorBTrackBar->Value;
+		}
+
+		private: System::Void ColorByPostionRadioButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isMovingLight = false;
+			isColoringByPosition = true;
+		}
+		private: System::Void ResetTeapotPositionButton_Click(System::Object^ sender, System::EventArgs^ e) {
+			resetTeapotPosition = true;
 		}
 
 
@@ -301,6 +312,7 @@ namespace InitOpenGL {
 			this->ColorByPostionRadioButton->TabStop = true;
 			this->ColorByPostionRadioButton->Text = L"Color By Position";
 			this->ColorByPostionRadioButton->UseVisualStyleBackColor = true;
+			this->ColorByPostionRadioButton->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::ColorByPostionRadioButton_CheckedChanged);
 			// 
 			// button2
 			// 
@@ -311,6 +323,7 @@ namespace InitOpenGL {
 			this->button2->TabIndex = 16;
 			this->button2->Text = L"Reset Teapot Position";
 			this->button2->UseVisualStyleBackColor = true;
+			this->button2->Click += gcnew System::EventHandler(this, &ToolWindow::ResetTeapotPositionButton_Click);
 			// 
 			// radioButton3
 			// 
@@ -373,10 +386,6 @@ private: System::Void textBox3_TextChanged(System::Object^ sender, System::Event
 }
 private: System::Void trackBar1_Scroll(System::Object^ sender, System::EventArgs^ e) {
 }
-
-
-
-
 
 };
 }
