@@ -63,6 +63,7 @@ void Mesh::Create(Shader* _shader, string _file)
 		m_texture2 = Texture();
 		m_texture2.LoadTexture("./Assets/Textures/Exercise2/TeapotSpecular.jpg");
 	}
+	//this one is for lights
 	else 
 	{
 		m_texture = Texture();
@@ -71,6 +72,45 @@ void Mesh::Create(Shader* _shader, string _file)
 		m_texture2.LoadTexture("./Assets/Textures/Exercise2/Teapot.jpg");
 	}
 
+
+	glGenBuffers(1, &m_vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, m_vertexData.size() * sizeof(float), m_vertexData.data(), GL_STATIC_DRAW);
+
+}
+
+void Mesh::Create(Shader* _shader, string _file, string _type)
+{
+	m_shader = _shader;
+
+	objl::Loader Loader;
+	M_ASSERT(Loader.LoadFile(_file) == true, "Failed to load mesh.");
+
+	for (unsigned int i = 0; i < Loader.LoadedMeshes.size(); i++)
+	{
+		objl::Mesh curMesh = Loader.LoadedMeshes[i];
+		for (unsigned int j = 0; j < curMesh.Vertices.size(); j++)
+		{
+			m_vertexData.push_back(curMesh.Vertices[j].Position.X);
+			m_vertexData.push_back(curMesh.Vertices[j].Position.Y);
+			m_vertexData.push_back(curMesh.Vertices[j].Position.Z);
+			m_vertexData.push_back(curMesh.Vertices[j].Normal.X);
+			m_vertexData.push_back(curMesh.Vertices[j].Normal.Y);
+			m_vertexData.push_back(curMesh.Vertices[j].Normal.Z);
+			m_vertexData.push_back(curMesh.Vertices[j].TextureCoordinate.X);
+			m_vertexData.push_back(curMesh.Vertices[j].TextureCoordinate.Y);
+		}
+	}
+	string diffuseMap = Loader.LoadedMaterials[0].map_Kd;
+	const size_t last_slash_idx = diffuseMap.find_last_of("\\");
+	if (std::string::npos != last_slash_idx)
+	{
+		diffuseMap.erase(0, last_slash_idx + 1);
+	}
+	m_texture = Texture();
+	m_texture.LoadTexture("./Assets/Textures/Exercise2/" + diffuseMap);
+	m_texture2 = Texture();
+	m_texture2.LoadTexture("./Assets/Textures/Exercise2/MetalFrameSpecular.jpg");
 
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
@@ -168,8 +208,6 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 			m_shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 200);
 		}
 		m_shader->SetFloat("material.specularStrength", InitOpenGL::ToolWindow::specularStrength);
-		m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_texture.GetTexture());
-		m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, m_texture2.GetTexture());
 	}
 	else if (InitOpenGL::ToolWindow::isColoringByPosition)
 	{
@@ -188,9 +226,7 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 
 			m_shader->SetVec3(Concat("light[", i, "].ambientColor").c_str(), { 0.1f, 0.1f, 0.1f });
 			m_shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), Lights[i].GetColor());
-
-			glm::vec3 specColor = { InitOpenGL::ToolWindow::specularColorR ,InitOpenGL::ToolWindow::specularColorG ,InitOpenGL::ToolWindow::specularColorB };
-			m_shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), specColor);
+			m_shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), { 3.0f, 3.0f, 3.0f });
 
 			m_shader->SetVec3(Concat("light[", i, "].position").c_str(), Lights[i].GetPosition());
 			m_shader->SetVec3(Concat("light[", i, "].direction").c_str(), glm::normalize(glm::vec3({ 0.0f + i * 0.1f, 0, 0.0f + i * 0.1f }) - Lights[i].GetPosition()));
@@ -198,9 +234,11 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 			m_shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 200);
 		}
 		m_shader->SetFloat("material.specularStrength", InitOpenGL::ToolWindow::specularStrength);
-		m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_texture.GetTexture());
-		m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, m_texture2.GetTexture());
-	//configure material
+
+	}
+
+	m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_texture.GetTexture());
+	m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, m_texture2.GetTexture());
 
 }
 

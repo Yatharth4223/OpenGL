@@ -14,6 +14,9 @@ public:
 	GameController();
 	virtual ~GameController();
 
+	static Shader m_MoveToSphere;
+	static Camera m_camera;
+
 	//Methods
 	void Initialize();
 	void RunGame();
@@ -24,8 +27,6 @@ private:
 	Shader m_shaderFont;
 	Shader m_shaderMoveLight;
 	Shader m_shaderColorByPosition;
-	Shader m_MoveToSphere;
-	Camera m_camera;
 	Skybox m_skybox;
 };
 

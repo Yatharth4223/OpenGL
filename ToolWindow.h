@@ -81,7 +81,8 @@ namespace InitOpenGL {
 
 
 	private: System::Windows::Forms::Button^ button2;
-	private: System::Windows::Forms::RadioButton^ radioButton3;
+	private: System::Windows::Forms::RadioButton^ MoveCubesToSphereButton;
+
 
 	private:
 		/// <summary>
@@ -94,11 +95,7 @@ namespace InitOpenGL {
 			resetLightPosition = true;
 		}
 
-		private: System::Void MoveLightRadioButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-			isMovingLight = true;
-			isColoringByPosition = false;
-			isMovingCubesToSpheres = false;
-		}
+
 		private: System::Void SpecularStrengthTrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
 			SpecularStrengthReading->Text = SpecularStrengthTrackBar->Value.ToString();
 			specularStrength = SpecularStrengthTrackBar->Value;
@@ -118,14 +115,26 @@ namespace InitOpenGL {
 			specularColorB = SpecularColorBTrackBar->Value;
 		}
 
+		private: System::Void MoveLightRadioButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isMovingLight = true;
+			isColoringByPosition = false;
+			isMovingCubesToSpheres = false;
+		}
+
 		private: System::Void ColorByPostionRadioButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 			isMovingLight = false;
 			isColoringByPosition = true;
+			isMovingCubesToSpheres = false;
 		}
 		private: System::Void ResetTeapotPositionButton_Click(System::Object^ sender, System::EventArgs^ e) {
 			resetTeapotPosition = true;
 		}
 
+		private: System::Void MoveCubesToSphereButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isMovingLight = false;
+			isColoringByPosition = false;
+			isMovingCubesToSpheres = true;
+		}
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -151,7 +160,7 @@ namespace InitOpenGL {
 			this->SpecularColorB = (gcnew System::Windows::Forms::TextBox());
 			this->ColorByPostionRadioButton = (gcnew System::Windows::Forms::RadioButton());
 			this->button2 = (gcnew System::Windows::Forms::Button());
-			this->radioButton3 = (gcnew System::Windows::Forms::RadioButton());
+			this->MoveCubesToSphereButton = (gcnew System::Windows::Forms::RadioButton());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpecularStrengthTrackBar))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpecularRtrackBar))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpecularGTrackBar))->BeginInit();
@@ -325,23 +334,24 @@ namespace InitOpenGL {
 			this->button2->UseVisualStyleBackColor = true;
 			this->button2->Click += gcnew System::EventHandler(this, &ToolWindow::ResetTeapotPositionButton_Click);
 			// 
-			// radioButton3
+			// MoveCubesToSphereButton
 			// 
-			this->radioButton3->AutoSize = true;
-			this->radioButton3->Location = System::Drawing::Point(12, 416);
-			this->radioButton3->Name = L"radioButton3";
-			this->radioButton3->Size = System::Drawing::Size(171, 20);
-			this->radioButton3->TabIndex = 17;
-			this->radioButton3->TabStop = true;
-			this->radioButton3->Text = L"Move Cubes To Sphere";
-			this->radioButton3->UseVisualStyleBackColor = true;
+			this->MoveCubesToSphereButton->AutoSize = true;
+			this->MoveCubesToSphereButton->Location = System::Drawing::Point(12, 416);
+			this->MoveCubesToSphereButton->Name = L"MoveCubesToSphereButton";
+			this->MoveCubesToSphereButton->Size = System::Drawing::Size(171, 20);
+			this->MoveCubesToSphereButton->TabIndex = 17;
+			this->MoveCubesToSphereButton->TabStop = true;
+			this->MoveCubesToSphereButton->Text = L"Move Cubes To Sphere";
+			this->MoveCubesToSphereButton->UseVisualStyleBackColor = true;
+			this->MoveCubesToSphereButton->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::MoveCubesToSphereButton_CheckedChanged);
 			// 
 			// ToolWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(582, 553);
-			this->Controls->Add(this->radioButton3);
+			this->Controls->Add(this->MoveCubesToSphereButton);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->ColorByPostionRadioButton);
 			this->Controls->Add(this->SpecularColorB);
