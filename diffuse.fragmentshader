@@ -4,7 +4,7 @@ in vec3 retNormal;
 in vec2 retTexCoord;
 in vec3 retFragPos;
 in vec3 retViewDirection;
-in mat4 retWorld;
+in mat4 retTBN;
 
 out vec4 FragColor;
 

@@ -6,6 +6,8 @@ Shader::Shader()
 	m_attrVertices = 0;
 	m_attrColors = 0;
 	m_attrNormals = 0;
+	m_attrTangents = 0;
+	m_attrBitangents = 0;
 	m_attrTexCoords = 0;
 	m_sampler1 = 0;
 	m_sampler2 = 0;
@@ -33,6 +35,8 @@ void Shader::LoadAttributes()
 	m_attrVertices = glGetAttribLocation(m_programID, "vertices");
 	m_attrColors = glGetAttribLocation(m_programID, "colors");
 	m_attrNormals = glGetAttribLocation(m_programID, "normals");
+	m_attrNormals = glGetAttribLocation(m_programID, "tangents");
+	m_attrNormals = glGetAttribLocation(m_programID, "bitangents");
 	m_attrTexCoords = glGetAttribLocation(m_programID, "texCoords");
 	m_attrWVP = glGetUniformLocation(m_programID, "WVP");
 }

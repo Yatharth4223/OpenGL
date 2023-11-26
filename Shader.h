@@ -15,6 +15,8 @@ public:
 	GLuint GetAttrVertices() { return m_attrVertices; }
 	GLuint GetAttrColors() { return m_attrColors; }
 	GLuint GetAttrNormals() { return m_attrNormals; }
+	GLuint GetAttrTangents() { return m_attrTangents; }
+	GLuint GetAttrBitangents() { return m_attrBitangents; }
 	GLuint GetAttrTexCoords() { return m_attrTexCoords; }
 	GLuint GetSampler1() { return m_sampler1; }
 	GLuint GetSampler2() { return m_sampler2; }
@@ -47,6 +49,8 @@ private:
 	GLint m_result;
 	int m_infoLogLength;
 	GLuint m_attrNormals;
+	GLuint m_attrTangents;
+	GLuint m_attrBitangents;
 };
 
 #endif // !SHADER_H

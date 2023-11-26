@@ -36,6 +36,23 @@ void Mesh::Create(Shader* _shader, string _file)
 	for (unsigned int i = 0; i < Loader.LoadedMeshes.size(); i++)
 	{
 		objl::Mesh curMesh = Loader.LoadedMeshes[i];
+		vector<objl::Vector3> tangents;
+		vector<objl::Vector3> bitangents;
+		vector<objl::Vertex> triangle;
+		objl::Vector3 tangent;
+		objl::Vector3 bitangent;
+
+		for (unsigned int k = 0; k < curMesh.Vertices.size(); k += 3)
+		{
+			triangle.clear();
+			triangle.push_back(curMesh.Vertices[k]);
+			triangle.push_back(curMesh.Vertices[k+1]);
+			triangle.push_back(curMesh.Vertices[k+2]);
+			CalculateTangents(triangle,tangent,bitangent);
+			tangents.push_back(tangent);
+			bitangents.push_back(bitangent);
+		}
+
 		for (unsigned int j = 0; j < curMesh.Vertices.size(); j++)
 		{
 			m_vertexData.push_back(curMesh.Vertices[j].Position.X);
@@ -46,6 +63,17 @@ void Mesh::Create(Shader* _shader, string _file)
 			m_vertexData.push_back(curMesh.Vertices[j].Normal.Z);
 			m_vertexData.push_back(curMesh.Vertices[j].TextureCoordinate.X);
 			m_vertexData.push_back(curMesh.Vertices[j].TextureCoordinate.Y);
+			
+			if (Loader.LoadedMaterials[0].map_bump != "")
+			{
+				int index = j / 3;
+				m_vertexData.push_back(tangents[index].X);
+				m_vertexData.push_back(tangents[index].Y);
+				m_vertexData.push_back(tangents[index].Z);
+				m_vertexData.push_back(bitangents[index].X);
+				m_vertexData.push_back(bitangents[index].Y);
+				m_vertexData.push_back(bitangents[index].Z);
+			}
 		}
 	}
 
@@ -82,7 +110,7 @@ void Mesh::Render(glm::mat4 _pv)
 {
 	glUseProgram(m_shader->GetProgramID());
 
-	m_rotation.y += 0.001f;
+	m_rotation.x += 0.1f;
 	
 	CalculateTransform();
 	SetShaderVariables(_pv);
@@ -129,7 +157,7 @@ void Mesh::BindAttributes()
 void Mesh::CalculateTransform()
 {
 	m_world = glm::translate(glm::mat4(1.0f), m_position);
-	m_world = glm::rotate(m_world, m_rotation.y, glm::vec3(0, 1, 0));
+	m_world = glm::rotate(m_world, glm::radians(m_rotation.x), glm::vec3(0, 1, 0));
 	m_world = glm::scale(m_world, m_scale);
 }
 
@@ -179,4 +207,24 @@ string Mesh::RemoveFolder(string _map)
 		_map.erase(0, last_slash_idx + 1);
 	}
 	return _map;
+}
+
+void Mesh::CalculateTangents(vector<objl::Vertex> _vertices, objl::Vector3& _tangent, objl::Vector3& _bitangent)
+{
+	objl::Vector3 edge1 = _vertices[1].Position - _vertices[0].Position;
+	objl::Vector3 edge2 = _vertices[2].Position - _vertices[0].Position;
+	objl::Vector2 deltaUV1 = _vertices[1].TextureCoordinate - _vertices[0].TextureCoordinate;
+	objl::Vector2 deltaUV2 = _vertices[2].TextureCoordinate - _vertices[0].TextureCoordinate;
+
+	float f = 1.0f / (deltaUV1.X * deltaUV2.Y - deltaUV2.X * deltaUV1.Y);
+
+	_tangent.X = f * (deltaUV2.Y * edge1.X - deltaUV1.Y * edge2.X);
+	_tangent.Y = f * (deltaUV2.Y * edge1.Y - deltaUV1.Y * edge2.Y);
+	_tangent.Z = f * (deltaUV2.Y * edge1.Z - deltaUV1.Y * edge2.Z);
+
+	_bitangent.X = f * (-deltaUV2.X * edge1.X - deltaUV1.X * edge2.X);
+	_bitangent.Y = f * (-deltaUV2.X * edge1.Y - deltaUV1.X * edge2.Y);
+	_bitangent.Z = f * (-deltaUV2.X * edge1.Z - deltaUV1.X * edge2.Z);
+
+
 }

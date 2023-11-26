@@ -3,6 +3,8 @@
 in vec3 vertices; // Value sent from application to this attribute
 in vec3 normals;
 in vec2 texCoords;
+in vec3 tangents;
+in vec3 bitangents;
 
 uniform vec3 CameraPosition;
 uniform mat4 World;
@@ -12,7 +14,7 @@ out vec3 retNormal;
 out vec2 retTexCoord;
 out vec3 retFragPos;
 out vec3 retViewDirection;
-out mat4 retWorld;
+out mat4 retTBN;
 
 void main()
 {
@@ -21,5 +23,9 @@ void main()
 	retTexCoord = texCoords;   
 	retFragPos = vec3(World * vec4(vertices, 1.0f));
 	retViewDirection = normalize(CameraPosition - retFragPos);
-	retWorld = transpose(inverse(World));
+	
+	vec3 T = normalize(vec3(World * vec4(tangents, 0.0f)));
+	vec3 B = normalize(vec3(World * vec4(bitangents, 0.0f)));
+	vec3 N = normalize(vec3(World * vec4(normals, 0.0f)));
+	retTBN = mat3(T,B,N);
 }
