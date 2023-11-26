@@ -12,6 +12,7 @@ out vec3 retNormal;
 out vec2 retTexCoord;
 out vec3 retFragPos;
 out vec3 retViewDirection;
+out mat4 retWorld;
 
 void main()
 {
@@ -20,4 +21,5 @@ void main()
 	retTexCoord = texCoords;   
 	retFragPos = vec3(World * vec4(vertices, 1.0f));
 	retViewDirection = normalize(CameraPosition - retFragPos);
+	retWorld = transpose(inverse(World));
 }

@@ -22,10 +22,8 @@ private:
 	Shader m_shaderColor;
 	Shader m_shaderDiffuse;
 	Shader m_shaderFont;
-	Shader m_shaderSkybox;
 	Camera m_camera;
 	vector<Mesh> m_meshes;
-	Skybox m_skybox;
 	Mesh m_meshLight;
 };
 
