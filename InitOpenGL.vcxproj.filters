@@ -51,6 +51,12 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Postprocessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ASEMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Singleton.h">
@@ -89,6 +95,12 @@
     <ClInclude Include="Skybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Postprocessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ASEMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleVertexShader.vertexshader" />
@@ -106,6 +118,8 @@
     <None Include="ColorByPosition.vertexshader" />
     <None Include="ColorByPosition.fragmentshader" />
     <None Include="MoveToSphere.vertexshader" />
-    <None Include="MoveToSphere.fragmnetshader" />
+    <None Include="MoveToSphere.fragmentshader" />
+    <None Include="Postprocessor.fragmentshader" />
+    <None Include="Postprocessor.vertexshader" />
   </ItemGroup>
 </Project>

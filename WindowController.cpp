@@ -19,7 +19,7 @@ void WindowController::NewWindow()
 	//giving a hint of the type of window I want
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	M_ASSERT((m_window = glfwCreateWindow(1024, 768, "A Sample Scene", NULL, NULL)) != nullptr, "Failed to open GLFW window.");
 	glfwMakeContextCurrent(m_window);
 

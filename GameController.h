@@ -26,13 +26,12 @@ public:
 private:
 	Shader m_shaderColor;
 	Shader m_shaderDiffuse;
-	Shader m_shaderFont;
 	Shader m_shaderMoveLight;
 	Shader m_shaderColorByPosition;
 	Skybox m_skybox;
+	Skybox m_shaderSkybox;
 	Shader m_shaderFont;
 	Shader m_shaderPost;
-	Camera m_camera;
 	PostProcessor m_postProcessor;
 	vector<Mesh> m_meshes;
 	Mesh m_meshLight;

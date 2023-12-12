@@ -119,3 +119,13 @@ void Fonts::RenderText(std::string _text, float _x, float _y, float _scale, glm:
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 }
+
+void Fonts::Cleanup()
+{
+	glDeleteBuffers(1, &m_vertexBuffer);
+	map<char, Character>::iterator it;
+	for (it = m_characters.begin(); it != m_characters.end(); it++)
+	{
+		glDeleteTextures(1, &it->second.TextureID);
+	}
+}

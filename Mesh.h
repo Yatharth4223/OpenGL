@@ -23,8 +23,8 @@ public:
 	void SetCameraPosition(glm::vec3 _cameraPosition) { m_cameraPosition = _cameraPosition; }
 
 	//Methods()
-	void Create(Shader* _shader, string _file);
-	void Create(Shader* _shader, string _file, string _type);
+	void Create(Shader* _shader, string _file, int _instanceCount = 1);
+	void Create(Shader* _shader, string _file, string _type, int _instanceCount = 1);
 	void Cleanup();
 	void CalculateTransform();
 	void Render(glm::mat4 _pv);

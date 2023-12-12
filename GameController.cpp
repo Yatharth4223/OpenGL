@@ -15,6 +15,8 @@ GameController::GameController()
 	m_shaderDiffuse = { };
 	m_shaderFont = {};
 	m_camera = {};
+	m_meshes.clear();
+	m_meshLight = { };
 }
 
 GameController::~GameController()
@@ -29,15 +31,19 @@ void GameController::Initialize()
 	GLFWwindow* window = WindowController::GetInstance().GetWindow();
 	M_ASSERT(glewInit() == GLEW_OK, "Failed to initialise GLEW.");
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-	glClearColor(0.1f, 0.1f, 0.1f, 0.0f); //Grey Background
+	glClearColor(0, 0, 0, 1); //Grey Background
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
 	srand((unsigned int)time(0));
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
 
-	m_camera = Camera(WindowController::GetInstance().GetResolution());
+	Resolution r = WindowController::GetInstance().GetResolution();
+	glViewport(0, 0, r.m_width, r.m_height);
+	m_camera = Camera(r);
 }
 
 void GameController::RunGame()
@@ -61,7 +67,10 @@ void GameController::RunGame()
 
 	m_MoveToSphere = Shader();
 	m_shaderColorByPosition.LoadShaders("MoveToSphere.vertexshader", "MoveToSphere.fragmentshader");
-
+	
+	m_shaderPost = Shader();
+	m_shaderPost.LoadShaders("Postprocessor.vertexshader", "Postprocessor.fragmentshader");
+	
 	//shader for font
 	m_shaderFont = Shader();
 	m_shaderFont.LoadShaders("Font.vertexshader", "Font.fragmentshader");
@@ -129,24 +138,31 @@ void GameController::RunGame()
 #pragma region CreateFonts
 	Fonts f = Fonts();
 	f.Create(&m_shaderFont, "arial.ttf", 100);
+	m_postProcessor = PostProcessor();
+	m_postProcessor.Create(&m_shaderPost);
+	GLFWwindow* win = WindowController::GetInstance().GetWindow();
+
 #pragma endregion CreateFonts
 
 
 #pragma region Render
-	GLFWwindow* win = WindowController::GetInstance().GetWindow();
+	double lastTime = glfwGetTime();
+	int fps = 0;
+	string fpsS = "0";
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clear the screen
 
 		if (InitOpenGL::ToolWindow::isMovingLight)
 		{
+
 			glfwSetMouseButtonCallback(win, mouse_button_callback);
 			if (InitOpenGL::ToolWindow::resetLightPosition)
 			{
 				Mesh::Lights[0].SetPosition({ 0.0f, 0.0f, 0.1f });
 				InitOpenGL::ToolWindow::resetLightPosition = false;
 			}
-
+			m_postProcessor.Start();
 			glm::mat4 view = glm::mat4(glm::mat3(m_camera.GetView()));
 			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
 			{
@@ -156,6 +172,7 @@ void GameController::RunGame()
 			{
 				Mesh::Lights[count].Render(m_camera.GetProjection() * m_camera.GetView());
 			}
+			m_postProcessor.End();
 
 		}
 		else if (InitOpenGL::ToolWindow::isColoringByPosition)
@@ -167,12 +184,14 @@ void GameController::RunGame()
 				Mesh::m_meshes[0].SetPosition({ 0.0f, 0.0f, 0.0f });
 				InitOpenGL::ToolWindow::resetTeapotPosition = false;
 			}
-
+			m_postProcessor.Start();
 			glm::mat4 view = glm::mat4(glm::mat3(m_camera.GetView()));
 			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
 			{
 				Mesh::m_meshes[count].Render(m_camera.GetProjection() * m_camera.GetView());
 			}
+			m_postProcessor.End();
+
 		}
 		else {
 
@@ -215,11 +234,9 @@ void GameController::RunGame()
 				Mesh::m_meshes[count].Render(m_camera.GetProjection()* m_camera.GetView());
 				GameController::boxes[count].Render(m_camera.GetProjection() * m_camera.GetView());
 			}
-
 		}
+		f.RenderText(fpsS, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
 
-		f.RenderText("Testing text",10, 500, 0.5f, { 1.0f, 1.0f, 0.0f });
-		
 		glfwSwapBuffers(WindowController::GetInstance().GetWindow()); //Swap the front and back buffers
 		glfwPollEvents();
 	} 
@@ -235,9 +252,12 @@ void GameController::RunGame()
 	{
 		Mesh::m_meshes[count].Cleanup();
 	}
+	f.Cleanup();
+	m_postProcessor.Cleanup();
 	m_shaderDiffuse.Cleanup();
 	m_shaderColor.Cleanup();
 	m_shaderMoveLight.Cleanup();
+	m_shaderSkybox.Cleanup();
 }
 
 //void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mods)

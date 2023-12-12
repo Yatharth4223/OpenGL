@@ -15,7 +15,10 @@ public:
 	GLuint GetAttrVertices() { return m_attrVertices; }
 	GLuint GetAttrColors() { return m_attrColors; }
 	GLuint GetAttrNormals() { return m_attrNormals; }
+	GLuint GetAttrTangents() { return m_attrTangents; }
+	GLuint GetAttrBitangents() { return m_attrBitangents; }
 	GLuint GetAttrTexCoords() { return m_attrTexCoords; }
+	GLuint GetAttrInstanceMatrix() { return m_attrInstanceMatrix; }
 	GLuint GetSampler1() { return m_sampler1; }
 	GLuint GetSampler2() { return m_sampler2; }
 	GLuint GetAttrWVP() { return m_attrWVP; }
@@ -41,12 +44,15 @@ private:
 	GLuint m_attrVertices; //Handle for the attribute vertex buffer
 	GLuint m_attrWVP;
 	GLuint m_attrTexCoords;
+	GLuint m_attrInstanceMatrix;
 	GLuint m_sampler1;
 	GLuint m_sampler2;
 	GLuint m_attrColors;
 	GLint m_result;
 	int m_infoLogLength;
 	GLuint m_attrNormals;
+	GLuint m_attrTangents;
+	GLuint m_attrBitangents;
 };
 
 #endif // !SHADER_H
