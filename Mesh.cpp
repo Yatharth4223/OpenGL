@@ -11,10 +11,10 @@ Mesh::Mesh()
 {
 	//providing default values
 	m_shader = nullptr;
-	m_texture = { };
+	m_textureDiffuse = { };
 	m_vertexBuffer = 0;
 	m_indexBuffer = 0;
-	m_texture2 = { };
+	m_textureSpecular = { };
 	
 	m_position = { 0,0,0 };
 	m_rotation = { 0,0,0 };
@@ -58,18 +58,18 @@ void Mesh::Create(Shader* _shader, string _file)
 	}
 	if (!diffuseMap.empty())
 	{
-		m_texture = Texture();
-		m_texture.LoadTexture("./Assets/Textures/Exercise2/" + diffuseMap);
-		m_texture2 = Texture();
-		m_texture2.LoadTexture("./Assets/Textures/Exercise2/TeapotSpecular.jpg");
+		m_textureDiffuse = Texture();
+		m_textureDiffuse.LoadTexture("./Assets/Textures/Exercise2/" + diffuseMap);
+		m_textureSpecular = Texture();
+		m_textureSpecular.LoadTexture("./Assets/Textures/Exercise2/TeapotSpecular.jpg");
 	}
 	//this one is for lights
 	else 
 	{
-		m_texture = Texture();
-		m_texture.LoadTexture("./Assets/Textures/Exercise2/Teapot.jpg");
-		m_texture2 = Texture();
-		m_texture2.LoadTexture("./Assets/Textures/Exercise2/Teapot.jpg");
+		m_textureDiffuse = Texture();
+		m_textureDiffuse.LoadTexture("./Assets/Textures/Exercise2/Teapot.jpg");
+		m_textureSpecular = Texture();
+		m_textureSpecular.LoadTexture("./Assets/Textures/Exercise2/Teapot.jpg");
 	}
 
 
@@ -107,10 +107,10 @@ void Mesh::Create(Shader* _shader, string _file, string _type)
 	{
 		diffuseMap.erase(0, last_slash_idx + 1);
 	}
-	m_texture = Texture();
-	m_texture.LoadTexture("./Assets/Textures/Exercise2/" + diffuseMap);
-	m_texture2 = Texture();
-	m_texture2.LoadTexture("./Assets/Textures/Exercise2/MetalFrameSpecular.jpg");
+	m_textureDiffuse = Texture();
+	m_textureDiffuse.LoadTexture("./Assets/Textures/Exercise2/" + diffuseMap);
+	m_textureSpecular = Texture();
+	m_textureSpecular.LoadTexture("./Assets/Textures/Exercise2/MetalFrameSpecular.jpg");
 
 	glGenBuffers(1, &m_vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
@@ -122,8 +122,8 @@ void Mesh::Cleanup()
 {
 	glDeleteBuffers(1, &m_vertexBuffer);
 	glDeleteBuffers(1, &m_indexBuffer);
-	m_texture.Cleanup();
-	m_texture2.Cleanup();
+	m_textureDiffuse.Cleanup();
+	m_textureSpecular.Cleanup();
 }
 
 void Mesh::Render(glm::mat4 _pv)
@@ -211,8 +211,8 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 	}
 	else if (InitOpenGL::ToolWindow::isColoringByPosition)
 	{
-		m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_texture.GetTexture());
-		m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, m_texture2.GetTexture());
+		m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_textureDiffuse.GetTexture());
+		m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, m_textureSpecular.GetTexture());
 	}
 
 	else
@@ -237,8 +237,8 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 
 	}
 
-	m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_texture.GetTexture());
-	m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, m_texture2.GetTexture());
+	m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_textureDiffuse.GetTexture());
+	m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, m_textureSpecular.GetTexture());
 
 }
 

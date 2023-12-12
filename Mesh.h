@@ -3,7 +3,7 @@
 
 #include "StandardIncludes.h"
 #include "Texture.h"
-
+#include "OBJ_Loader.h"
 #include "Shader.h"
 
 class Mesh
@@ -40,15 +40,25 @@ private:
 	void SetShaderVariables(glm::mat4 _pv);
 	void BindAttributes();
 	string Concat(string _s1, int _index, string _s2);
+	string RemoveFolder(string _map);
+	void CalculateTangents(vector<objl::Vertex> _vertices, objl::Vector3& _tangent, objl::Vector3& _bitangent);
+	bool EndsWith(std::string const& _fullstring, std::string const& _ending);
 
 	Shader* m_shader;
-	Texture m_texture;
-	Texture m_texture2;
+	Texture m_textureDiffuse;
+	Texture m_textureSpecular;
+	Texture m_textureNormal;
 	//one point in ram and one on OpenGL
 	GLuint m_vertexBuffer;
 	GLuint m_indexBuffer;
+	GLuint m_instanceBuffer;
 	std::vector<GLfloat> m_vertexData;
 	std::vector<GLubyte> m_indexData;
+	std::vector<GLubyte> m_instanceData;
+	bool m_enableNormalMap;
+	int m_instanceCount;
+	bool m_enableInstancing;
+	int m_elementSize;
 
 	//Transform
 	glm::vec3 m_position;

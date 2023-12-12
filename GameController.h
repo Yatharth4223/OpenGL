@@ -7,6 +7,7 @@
 #include "Skybox.h"
 #include "WindowController.h"
 #include "Camera.h"
+#include "Postprocessor.h"
 
 class GameController : public Singleton<GameController>
 {
@@ -29,6 +30,13 @@ private:
 	Shader m_shaderMoveLight;
 	Shader m_shaderColorByPosition;
 	Skybox m_skybox;
+	Shader m_shaderFont;
+	Shader m_shaderPost;
+	Camera m_camera;
+	PostProcessor m_postProcessor;
+	vector<Mesh> m_meshes;
+	Mesh m_meshLight;
+	GLuint vao;
 };
 
 #endif GAME_CONTROLLER_H
