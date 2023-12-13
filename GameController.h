@@ -28,8 +28,8 @@ private:
 	Shader m_shaderDiffuse;
 	Shader m_shaderMoveLight;
 	Shader m_shaderColorByPosition;
-	Skybox m_skybox;
-	Skybox m_shaderSkybox;
+	//Skybox m_skybox;
+	Shader m_shaderSkybox;
 	Shader m_shaderFont;
 	Shader m_shaderWater;
 	Shader m_shaderPost;

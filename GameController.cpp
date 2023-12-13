@@ -8,7 +8,6 @@ Shader GameController::m_MoveToSphere;
 Camera GameController::m_camera;
 vector<Mesh> GameController::boxes;
 
-
 GameController::GameController()
 {
 	m_shaderColor = {};
@@ -24,6 +23,23 @@ GameController::~GameController()
 
 }
 
+bool leftMouseButton = false;
+bool middleMouseButton = false;
+double prevMouseX, prevMouseY;
+
+// Transformation parameters
+float translationX = 0.0f;
+float translationY = 0.0f;
+float translationZ = 0.0f;
+
+float rotationX = 0.0f;
+float rotationY = 0.0f;
+float rotationZ = 0.0f;
+
+float scaleXY = 1.0f;
+float scaleZ = 1.0f;
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 void mouseMoveCallback(GLFWwindow* window, double xpos, double ypos);
 
@@ -68,6 +84,9 @@ void GameController::RunGame()
 
 	m_MoveToSphere = Shader();
 	m_shaderColorByPosition.LoadShaders("MoveToSphere.vertexshader", "MoveToSphere.fragmentshader");
+
+	m_shaderSkybox = Shader();
+	m_shaderColorByPosition.LoadShaders("Skybox.vertexshader", "Skybox.fragmentshader");
 	
 	m_shaderPost = Shader();
 	m_shaderPost.LoadShaders("Postprocessor.vertexshader", "Postprocessor.fragmentshader");
@@ -165,13 +184,14 @@ void GameController::RunGame()
 	}
 	else
 	{
-		Skybox box = Skybox();
-		box.Create(&m_shaderSkybox, "./Assets/Models/FinalProjectAssets/Fish.obj");
-		box.SetCameraPosition(m_camera.GetPosition());
-		box.SetScale({ 0.5f,0.5f,0.5f });
-		box.SetPosition({ 0.0f, 0.0f, 0.0f });
-		box.isVisible = true;
-		Mesh::m_meshes.push_back(box);
+		Skybox skybox = Skybox();
+		skybox.Create(&m_shaderSkybox, "./Assets/Models/FinalProjectAssets/Skybox.obj",
+			{ "./Assets/Textures/FinalProjectAssets/Skybox/right.jpg",
+			"./Assets/Textures/FinalProjectAssets/Skybox/left.jpg",
+			"./Assets/Textures/FinalProjectAssets/Skybox/top.jpg",
+			"./Assets/Textures/FinalProjectAssets/Skybox/bottom.jpg",
+			"./Assets/Textures/FinalProjectAssets/Skybox/front.jpg",
+			"./Assets/Textures/FinalProjectAssets/Skybox/back.jpg" });
 	}
 	
 #pragma endregion CreateMeshes
@@ -340,7 +360,7 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 
 	if (_button == GLFW_MOUSE_BUTTON_LEFT && _action == GLFW_PRESS) {
 
-		if(InitOpenGL::ToolWindow::isMovingCubesToSpheres)
+		if(InitOpenGL::ToolWindow::isSpaceScene)
 		{
 			std::random_device rd;
 			std::mt19937 gen(rd()); // Mersenne Twister engine
@@ -359,6 +379,10 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 			box.isVisible = true;
 			GameController::boxes.push_back(box);
 	#pragma endregion Adding A Box
+		}
+		else if (InitOpenGL::ToolWindow::isWaterScene)
+		{
+
 		}
 		else 
 		{
@@ -421,6 +445,12 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 				}
 
 				Mesh::m_meshes[0].SetPosition({ ObjectPosX,ObjectPosY,ObjectPosZ });
+				Mesh::m_meshes[0].CalculateTransform();
+				glTranslatef(translationX, translationY, translationZ);
+				glRotatef(rotationX, 1.0f, 0.0f, 0.0f);
+				glRotatef(rotationY, 0.0f, 1.0f, 0.0f);
+				glRotatef(rotationZ, 0.0f, 0.0f, 1.0f);
+				glScalef(scaleXY, scaleXY, scaleZ);
 			}
 		}
 		
@@ -428,18 +458,31 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 }
 
 void mouseMoveCallback(GLFWwindow* window, double xpos, double ypos) {
+
 	int deltaX = static_cast<int>(xpos - prevMouseX);
 	int deltaY = static_cast<int>(ypos - prevMouseY);
 
 	if (leftMouseButton) {
-		translationX += static_cast<float>(deltaX) / windowWidth;
-		translationY -= static_cast<float>(deltaY) / windowHeight;
+		translationX += static_cast<float>(deltaX) / WindowController::GetInstance().GetResolution().m_width;
+		translationY -= static_cast<float>(deltaY) / WindowController::GetInstance().GetResolution().m_height;
 	}
 
 	if (middleMouseButton) {
-		translationZ -= static_cast<float>(deltaY) / windowHeight;
+		translationZ -= static_cast<float>(deltaY) / 600;
 	}
 
 	prevMouseX = xpos;
 	prevMouseY = ypos;
+}
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT) {
+		leftMouseButton = (action == GLFW_PRESS);
+	}
+	else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+		middleMouseButton = (action == GLFW_PRESS);
+	}
+
+	glfwGetCursorPos(window, &prevMouseX, &prevMouseY);
 }
