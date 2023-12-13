@@ -28,14 +28,8 @@ bool middleMouseButton = false;
 double prevMouseX, prevMouseY;
 
 // Transformation parameters
-float translationX = 0.0f;
-float translationY = 0.0f;
-float translationZ = 0.0f;
-
-float rotationX = 0.0f;
-float rotationY = 0.0f;
-float rotationZ = 0.0f;
-
+glm::vec3 translation(0.0f, 0.0f, 0.0f);
+glm::vec3 rotation(0.0f, 0.0f, 0.0f);
 float scaleXY = 1.0f;
 float scaleZ = 1.0f;
 
@@ -239,6 +233,7 @@ void GameController::RunGame()
 		else if (InitOpenGL::ToolWindow::isTransforming)
 		{
 			glfwSetMouseButtonCallback(win, mouse_button_callback);
+			glfwSetCursorPosCallback(win, mouseMoveCallback);
 
 			if (InitOpenGL::ToolWindow::resetTransform)
 			{
@@ -321,42 +316,8 @@ void GameController::RunGame()
 	m_shaderSkybox.Cleanup();
 }
 
-//void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mods)
-//{
-//	if (_button == GLFW_MOUSE_BUTTON_LEFT && _action == GLFW_PRESS) {
-//		double mouseX, mouseY;
-//		glfwGetCursorPos(window, &mouseX, &mouseY); // 10 10
-//
-//		float lightPosX = Mesh::Lights[0].GetPosition().x; //0
-//		float lightPosY = Mesh::Lights[0].GetPosition().y; //0
-//		float lightPosZ = Mesh::Lights[0].GetPosition().z; //1
-//
-//		int screenWidth = WindowController::GetInstance().GetResolution().m_width; //800
-//		int screenHeight = WindowController::GetInstance().GetResolution().m_height; //600
-//
-//		int quadrantX = (mouseX < screenWidth / 2) ? -1 : 1; // firstQuad 1
-//		int quadrantY = (mouseY < screenHeight / 2) ? -1 : 1; //1
-//
-//		mouseY += screenHeight;
-//
-//		GLfloat centerX = screenWidth / 2.0f; // 400
-//		GLfloat centerY = screenHeight/ 2.0f; //400
-//		GLfloat dx = mouseX - lightPosX; // 10
-//		GLfloat dy = mouseY - lightPosY; // 10
-//
-//		// Move the light towards the clicked point
-//		float speed = 0.1f;  // Adjust the speed as needed
-//		lightPosX += speed * quadrantX; // 0.1 * -398 
-//		lightPosY += speed * quadrantY; // 0.1 * 398
-//
-//		Mesh::Lights[0].SetPosition({ lightPosX,lightPosY,lightPosZ });		
-//	}
-//}
-
-
 void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mods)
 {
-
 
 	if (_button == GLFW_MOUSE_BUTTON_LEFT && _action == GLFW_PRESS) {
 
@@ -445,12 +406,11 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 				}
 
 				Mesh::m_meshes[0].SetPosition({ ObjectPosX,ObjectPosY,ObjectPosZ });
-				Mesh::m_meshes[0].CalculateTransform();
-				glTranslatef(translationX, translationY, translationZ);
-				glRotatef(rotationX, 1.0f, 0.0f, 0.0f);
-				glRotatef(rotationY, 0.0f, 1.0f, 0.0f);
-				glRotatef(rotationZ, 0.0f, 0.0f, 1.0f);
-				glScalef(scaleXY, scaleXY, scaleZ);
+				Mesh::m_meshes[0].CalculateTransform(translation, rotation, { scaleXY ,scaleXY ,scaleZ});
+				for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
+				{
+					Mesh::m_meshes[count].Render(GameController::m_camera.GetProjection() * GameController::m_camera.GetView());
+				}
 			}
 		}
 		
@@ -461,16 +421,34 @@ void mouseMoveCallback(GLFWwindow* window, double xpos, double ypos) {
 
 	int deltaX = static_cast<int>(xpos - prevMouseX);
 	int deltaY = static_cast<int>(ypos - prevMouseY);
+	
+	if (InitOpenGL::ToolWindow::isTranslating)
+	{
+		if (leftMouseButton) {
+			translation.x += static_cast<float>(deltaX) / WindowController::GetInstance().GetResolution().m_width;
+			translation.y -= static_cast<float>(deltaY) / WindowController::GetInstance().GetResolution().m_height;
+		}
 
-	if (leftMouseButton) {
-		translationX += static_cast<float>(deltaX) / WindowController::GetInstance().GetResolution().m_width;
-		translationY -= static_cast<float>(deltaY) / WindowController::GetInstance().GetResolution().m_height;
+		if (middleMouseButton) {
+			translation.z -= static_cast<float>(deltaY) / WindowController::GetInstance().GetResolution().m_height;
+		}
 	}
-
-	if (middleMouseButton) {
-		translationZ -= static_cast<float>(deltaY) / 600;
+	else if (InitOpenGL::ToolWindow::isRotating)
+	{
+		if (leftMouseButton) {
+			// Rotate the model based on mouse movement
+			rotation.x += static_cast<float>(deltaY) * 0.5f;
+			rotation.y += static_cast<float>(deltaX) * 0.5f;
+		}
 	}
-
+	else
+	{
+		if (leftMouseButton) {
+			// Scale the model based on mouse movement
+			scaleXY += static_cast<float>(deltaY) * 0.01f;  // Adjust the multiplier as needed
+			scaleZ += static_cast<float>(deltaY) * 0.01f;    // Adjust the multiplier as needed
+		}
+	}
 	prevMouseX = xpos;
 	prevMouseY = ypos;
 }

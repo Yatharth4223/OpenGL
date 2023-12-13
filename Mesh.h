@@ -27,6 +27,7 @@ public:
 	void Create(Shader* _shader, string _file, string _type, int _instanceCount = 1);
 	void Cleanup();
 	void CalculateTransform();
+	void CalculateTransform(glm::vec3 _translation, glm::vec3 _rotation, glm::vec3 _scale);
 	void Render(glm::mat4 _pv);
 
 	//Members

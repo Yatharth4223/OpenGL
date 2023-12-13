@@ -380,6 +380,14 @@ void Mesh::CalculateTransform()
 	m_world = glm::scale(m_world, m_scale);
 }
 
+void Mesh::CalculateTransform(glm::vec3 _translation, glm::vec3 _rotation, glm::vec3 _scale)
+{
+	m_world = glm::translate(glm::mat4(1.0f), _translation);
+	//m_world = glm::rotate(m_world, m_rotation.y, glm::vec3(0, 1, 0));
+	m_world = glm::rotate(m_world, glm::radians(_rotation.x), glm::vec3(0, 1, 0));
+	m_world = glm::scale(m_world, _scale);
+}
+
 void Mesh::SetShaderVariables(glm::mat4 _pv)
 {
 	m_shader->SetMat4("World", m_world);
