@@ -31,6 +31,7 @@ private:
 	Skybox m_skybox;
 	Skybox m_shaderSkybox;
 	Shader m_shaderFont;
+	Shader m_shaderWater;
 	Shader m_shaderPost;
 	PostProcessor m_postProcessor;
 	vector<Mesh> m_meshes;

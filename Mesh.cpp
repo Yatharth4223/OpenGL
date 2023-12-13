@@ -113,25 +113,25 @@ void Mesh::Create(Shader* _shader, string _file, int _instanceCount)
 		if (mat->Maps[0]->Name == "DIFFUSE")
 		{
 			string fn = msclr::interop::marshal_as<std::string>(mat->Maps[0]->TextureFileName);
-			m_textureDiffuse.LoadTexture("./Assets/Textures/" + RemoveFolder(fn));
+			m_textureDiffuse.LoadTexture("./Assets/FinalProjectAssets/Textures/" + RemoveFolder(fn));
 		}
 		m_textureSpecular = Texture();
 		if (mat->Maps[1]->Name == "SPECULAR")
 		{
 			string fn = msclr::interop::marshal_as<std::string>(mat->Maps[1]->TextureFileName);
-			m_textureSpecular.LoadTexture("./Assets/Textures/" + RemoveFolder(fn));
+			m_textureSpecular.LoadTexture("./Assets/FinalProjectAssets/Textures/" + RemoveFolder(fn));
 		}
 		m_textureNormal = Texture();
 		if (mat->Maps[1]->Name == "BUMP")
 		{
 			string fn = msclr::interop::marshal_as<std::string>(mat->Maps[1]->TextureFileName);
-			m_textureNormal.LoadTexture("./Assets/Textures/" + RemoveFolder(fn));
+			m_textureNormal.LoadTexture("./Assets/FinalProjectAssets/Textures/" + RemoveFolder(fn));
 			m_enableNormalMap = true;
 		}
 		else if (mat->Maps[2]->Name == "BUMP")
 		{
 			string fn = msclr::interop::marshal_as<std::string>(mat->Maps[2]->TextureFileName);
-			m_textureNormal.LoadTexture("./Assets/Textures/" + RemoveFolder(fn));
+			m_textureNormal.LoadTexture("./Assets/FinalProjectAssets/Textures/" + RemoveFolder(fn));
 			m_enableNormalMap = true;
 		}
 	}
@@ -165,7 +165,7 @@ void Mesh::Create(Shader* _shader, string _file, int _instanceCount)
 		if (!diffuseMap.empty())
 		{
 			m_textureDiffuse = Texture();
-			m_textureDiffuse.LoadTexture("./Assets/Textures/Exercise2/" + diffuseMap);
+			m_textureDiffuse.LoadTexture("./Assets/Textures/FinalProjectAssets/" + diffuseMap);
 			m_textureSpecular = Texture();
 			m_textureSpecular.LoadTexture("./Assets/Textures/Exercise2/TeapotSpecular.jpg");
 		}
@@ -409,7 +409,7 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 			m_shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 200);
 		}
 	}
-	else if (InitOpenGL::ToolWindow::isColoringByPosition)
+	else if (InitOpenGL::ToolWindow::isTransforming)
 	{
 		m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_textureDiffuse.GetTexture());
 		m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, m_textureSpecular.GetTexture());

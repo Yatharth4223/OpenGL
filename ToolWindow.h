@@ -18,15 +18,48 @@ namespace InitOpenGL {
 	public ref class ToolWindow : public System::Windows::Forms::Form
 	{
 	public : 
+
 		static bool isMovingLight = true;
 		static bool resetLightPosition = false;
 		static int specularStrength = 0;
 		static double specularColorR = 0;
 		static double specularColorG = 0;
 		static double specularColorB = 0;
-		static bool isColoringByPosition = false;
-		static bool resetTeapotPosition = false;
-		static bool isMovingCubesToSpheres = false;
+		
+		static bool isTransforming = false;
+		static bool isTranslating = false;
+		static bool isRotating = false;
+		static bool isScaling = false;
+		static bool resetTransform = false;
+
+		static bool isWaterScene= false;
+		static bool isBlueTint = false;
+		static bool isWireFrameRender = false;
+		static double frequency = 0;
+		static double amplitude = 0;
+
+		static bool isSpaceScene = false;
+
+	public:
+
+	private: System::Windows::Forms::CheckBox^ TranslateCheckBox;
+	private: System::Windows::Forms::CheckBox^ RotateCheckBox;
+	private: System::Windows::Forms::CheckBox^ ScaleCheckBox;
+	private: System::Windows::Forms::RadioButton^ SpaceSceneRadioButton;
+	private: System::Windows::Forms::TrackBar^ frequencyTrackBar;
+
+	private: System::Windows::Forms::TextBox^ frequencytextBox;
+
+	private: System::Windows::Forms::TextBox^ textBox4;
+	private: System::Windows::Forms::TextBox^ textBox8;
+	private: System::Windows::Forms::TrackBar^ amplitudeTrackBar;
+
+	private: System::Windows::Forms::CheckBox^ TinBluecheckBox;
+	private: System::Windows::Forms::CheckBox^ WireFramecheckBox;
+	private: System::Windows::Forms::TextBox^ amplitudeTextBox;
+
+	private: System::Windows::Forms::CheckBox^ TranslateCheckBox;
+
 
 
 		ToolWindow(void)
@@ -36,6 +69,9 @@ namespace InitOpenGL {
 			SpecularColorR->Text = SpecularRtrackBar->Value.ToString();
 			SpecularColorG->Text = SpecularGTrackBar->Value.ToString();
 			SpecularColorB->Text = SpecularColorBTrackBar->Value.ToString();
+
+			frequencytextBox->Text = frequencyTrackBar->Value.ToString();
+			amplitudeTextBox->Text = amplitudeTrackBar->Value.ToString();
 		}
 
 	protected:
@@ -76,12 +112,9 @@ namespace InitOpenGL {
 
 	private: System::Windows::Forms::TextBox^ SpecularColorG;
 	private: System::Windows::Forms::TextBox^ SpecularColorB;
-	private: System::Windows::Forms::RadioButton^ ColorByPostionRadioButton;
-
-
-
-	private: System::Windows::Forms::Button^ button2;
-	private: System::Windows::Forms::RadioButton^ MoveCubesToSphereButton;
+	private: System::Windows::Forms::RadioButton^ TransformRadioButton;
+	private: System::Windows::Forms::Button^ ResetTransformButton;
+	private: System::Windows::Forms::RadioButton^ WaterSceneButton;
 
 
 	private:
@@ -116,26 +149,61 @@ namespace InitOpenGL {
 		}
 
 		private: System::Void MoveLightRadioButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-			isMovingLight = true;
-			isColoringByPosition = false;
-			isMovingCubesToSpheres = false;
+			isMovingLight = MoveLightRadioButton->Checked;
 		}
 
-		private: System::Void ColorByPostionRadioButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-			isMovingLight = false;
-			isColoringByPosition = true;
-			isMovingCubesToSpheres = false;
-		}
-		private: System::Void ResetTeapotPositionButton_Click(System::Object^ sender, System::EventArgs^ e) {
-			resetTeapotPosition = true;
+		//private: System::Void ResetTeapotPositionButton_Click(System::Object^ sender, System::EventArgs^ e) {
+		//	resetTransform = true;
+		//}
+
+		//private: System::Void MoveCubesToSphereButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+		//	isMovingLight = false;
+		//	isTransforming = false;
+		//}
+
+		private: System::Void TransformRadioButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isTransforming = TransformRadioButton->Checked;
+	    }
+		private: System::Void ResetTransformButton_Click(System::Object^ sender, System::EventArgs^ e) {
+			isTransforming = true;
 		}
 
-		private: System::Void MoveCubesToSphereButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-			isMovingLight = false;
-			isColoringByPosition = false;
-			isMovingCubesToSpheres = true;
+		private: System::Void TranslateButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isTranslating = TranslateCheckBox->Checked;
 		}
 
+		private: System::Void RotateButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isRotating = RotateCheckBox->Checked;
+		}
+
+		private: System::Void ScaleButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isScaling = ScaleCheckBox->Checked;
+		}
+
+		private: System::Void frequencyTrackBar_Scroll(System::Object^ sender, System::EventArgs^ e) {
+			frequencytextBox->Text = frequencyTrackBar->Value.ToString();
+			frequency = frequencyTrackBar->Value;
+	    }
+
+		private: System::Void amplitudeTrackBar_scroll(System::Object^ sender, System::EventArgs^ e) {
+			amplitudeTextBox->Text = amplitudeTrackBar->Value.ToString();
+			amplitude = amplitudeTrackBar->Value;
+	    }
+
+		private: System::Void WireFramecheckBox_checkedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isWireFrameRender = WireFramecheckBox->Checked;
+		}
+
+		private: System::Void TintBlueButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isBlueTint = true;
+		}
+
+		private: System::Void WaterSceneButton_checkedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isWaterScene = WaterSceneButton->Checked;
+		}
+		private: System::Void SpaceSceneRadioButton_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+			isSpaceScene = SpaceSceneRadioButton->Checked;
+		}
 #pragma region Windows Form Designer generated code
 		/// <summary>
 		/// Required method for Designer support - do not modify
@@ -158,13 +226,27 @@ namespace InitOpenGL {
 			this->SpecularColorBTrackBar = (gcnew System::Windows::Forms::TrackBar());
 			this->SpecularColorG = (gcnew System::Windows::Forms::TextBox());
 			this->SpecularColorB = (gcnew System::Windows::Forms::TextBox());
-			this->ColorByPostionRadioButton = (gcnew System::Windows::Forms::RadioButton());
-			this->button2 = (gcnew System::Windows::Forms::Button());
-			this->MoveCubesToSphereButton = (gcnew System::Windows::Forms::RadioButton());
+			this->TransformRadioButton = (gcnew System::Windows::Forms::RadioButton());
+			this->ResetTransformButton = (gcnew System::Windows::Forms::Button());
+			this->WaterSceneButton = (gcnew System::Windows::Forms::RadioButton());
+			this->TranslateCheckBox = (gcnew System::Windows::Forms::CheckBox());
+			this->RotateCheckBox = (gcnew System::Windows::Forms::CheckBox());
+			this->ScaleCheckBox = (gcnew System::Windows::Forms::CheckBox());
+			this->SpaceSceneRadioButton = (gcnew System::Windows::Forms::RadioButton());
+			this->frequencyTrackBar = (gcnew System::Windows::Forms::TrackBar());
+			this->frequencytextBox = (gcnew System::Windows::Forms::TextBox());
+			this->textBox4 = (gcnew System::Windows::Forms::TextBox());
+			this->textBox8 = (gcnew System::Windows::Forms::TextBox());
+			this->amplitudeTrackBar = (gcnew System::Windows::Forms::TrackBar());
+			this->TinBluecheckBox = (gcnew System::Windows::Forms::CheckBox());
+			this->WireFramecheckBox = (gcnew System::Windows::Forms::CheckBox());
+			this->amplitudeTextBox = (gcnew System::Windows::Forms::TextBox());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpecularStrengthTrackBar))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpecularRtrackBar))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpecularGTrackBar))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpecularColorBTrackBar))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->frequencyTrackBar))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->amplitudeTrackBar))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// MoveLightRadioButton
@@ -175,7 +257,6 @@ namespace InitOpenGL {
 			this->MoveLightRadioButton->Name = L"MoveLightRadioButton";
 			this->MoveLightRadioButton->Size = System::Drawing::Size(93, 20);
 			this->MoveLightRadioButton->TabIndex = 0;
-			this->MoveLightRadioButton->TabStop = true;
 			this->MoveLightRadioButton->Text = L"Move Light";
 			this->MoveLightRadioButton->UseVisualStyleBackColor = true;
 			this->MoveLightRadioButton->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::MoveLightRadioButton_CheckedChanged);
@@ -310,50 +391,180 @@ namespace InitOpenGL {
 			this->SpecularColorB->Size = System::Drawing::Size(47, 22);
 			this->SpecularColorB->TabIndex = 14;
 			// 
-			// ColorByPostionRadioButton
+			// TransformRadioButton
 			// 
-			this->ColorByPostionRadioButton->AccessibleName = L"ColorPositionRadioButton";
-			this->ColorByPostionRadioButton->AutoSize = true;
-			this->ColorByPostionRadioButton->Location = System::Drawing::Point(12, 342);
-			this->ColorByPostionRadioButton->Name = L"ColorByPostionRadioButton";
-			this->ColorByPostionRadioButton->Size = System::Drawing::Size(130, 20);
-			this->ColorByPostionRadioButton->TabIndex = 15;
-			this->ColorByPostionRadioButton->TabStop = true;
-			this->ColorByPostionRadioButton->Text = L"Color By Position";
-			this->ColorByPostionRadioButton->UseVisualStyleBackColor = true;
-			this->ColorByPostionRadioButton->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::ColorByPostionRadioButton_CheckedChanged);
+			this->TransformRadioButton->AccessibleName = L"TransformRadioButton";
+			this->TransformRadioButton->AutoSize = true;
+			this->TransformRadioButton->Location = System::Drawing::Point(12, 342);
+			this->TransformRadioButton->Name = L"TransformRadioButton";
+			this->TransformRadioButton->Size = System::Drawing::Size(89, 20);
+			this->TransformRadioButton->TabIndex = 15;
+			this->TransformRadioButton->Text = L"Transform";
+			this->TransformRadioButton->UseVisualStyleBackColor = true;
+			this->TransformRadioButton->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::TransformRadioButton_CheckedChanged);
 			// 
-			// button2
+			// ResetTransformButton
 			// 
-			this->button2->AccessibleName = L"ResetTeapotPositionButton";
-			this->button2->Location = System::Drawing::Point(31, 368);
-			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(154, 23);
-			this->button2->TabIndex = 16;
-			this->button2->Text = L"Reset Teapot Position";
-			this->button2->UseVisualStyleBackColor = true;
-			this->button2->Click += gcnew System::EventHandler(this, &ToolWindow::ResetTeapotPositionButton_Click);
+			this->ResetTransformButton->AccessibleName = L"ResetPositionButton";
+			this->ResetTransformButton->Location = System::Drawing::Point(31, 368);
+			this->ResetTransformButton->Name = L"ResetTransformButton";
+			this->ResetTransformButton->Size = System::Drawing::Size(154, 23);
+			this->ResetTransformButton->TabIndex = 16;
+			this->ResetTransformButton->Text = L"Reset Transform";
+			this->ResetTransformButton->UseVisualStyleBackColor = true;
+			this->ResetTransformButton->Click += gcnew System::EventHandler(this, &ToolWindow::ResetTransformButton_Click);
 			// 
-			// MoveCubesToSphereButton
+			// WaterSceneButton
 			// 
-			this->MoveCubesToSphereButton->AutoSize = true;
-			this->MoveCubesToSphereButton->Location = System::Drawing::Point(12, 416);
-			this->MoveCubesToSphereButton->Name = L"MoveCubesToSphereButton";
-			this->MoveCubesToSphereButton->Size = System::Drawing::Size(171, 20);
-			this->MoveCubesToSphereButton->TabIndex = 17;
-			this->MoveCubesToSphereButton->TabStop = true;
-			this->MoveCubesToSphereButton->Text = L"Move Cubes To Sphere";
-			this->MoveCubesToSphereButton->UseVisualStyleBackColor = true;
-			this->MoveCubesToSphereButton->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::MoveCubesToSphereButton_CheckedChanged);
+			this->WaterSceneButton->AutoSize = true;
+			this->WaterSceneButton->Location = System::Drawing::Point(1, 497);
+			this->WaterSceneButton->Name = L"WaterSceneButton";
+			this->WaterSceneButton->Size = System::Drawing::Size(106, 20);
+			this->WaterSceneButton->TabIndex = 17;
+			this->WaterSceneButton->Text = L"Water Scene";
+			this->WaterSceneButton->UseVisualStyleBackColor = true;
+			this->WaterSceneButton->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::WaterSceneButton_checkedChanged);
+			// 
+			// TranslateCheckBox
+			// 
+			this->TranslateCheckBox->AutoSize = true;
+			this->TranslateCheckBox->Location = System::Drawing::Point(31, 398);
+			this->TranslateCheckBox->Name = L"TranslateCheckBox";
+			this->TranslateCheckBox->Size = System::Drawing::Size(86, 20);
+			this->TranslateCheckBox->TabIndex = 20;
+			this->TranslateCheckBox->Text = L"Translate";
+			this->TranslateCheckBox->UseVisualStyleBackColor = true;
+			this->TranslateCheckBox->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::TranslateButton_CheckedChanged);
+			// 
+			// RotateCheckBox
+			// 
+			this->RotateCheckBox->AutoSize = true;
+			this->RotateCheckBox->Location = System::Drawing::Point(31, 424);
+			this->RotateCheckBox->Name = L"RotateCheckBox";
+			this->RotateCheckBox->Size = System::Drawing::Size(69, 20);
+			this->RotateCheckBox->TabIndex = 21;
+			this->RotateCheckBox->Text = L"Rotate";
+			this->RotateCheckBox->UseVisualStyleBackColor = true;
+			this->RotateCheckBox->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::RotateButton_CheckedChanged);
+			// 
+			// ScaleCheckBox
+			// 
+			this->ScaleCheckBox->AutoSize = true;
+			this->ScaleCheckBox->Location = System::Drawing::Point(31, 450);
+			this->ScaleCheckBox->Name = L"ScaleCheckBox";
+			this->ScaleCheckBox->Size = System::Drawing::Size(64, 20);
+			this->ScaleCheckBox->TabIndex = 22;
+			this->ScaleCheckBox->Text = L"Scale";
+			this->ScaleCheckBox->UseVisualStyleBackColor = true;
+			this->ScaleCheckBox->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::ScaleButton_CheckedChanged);
+			// 
+			// SpaceSceneRadioButton
+			// 
+			this->SpaceSceneRadioButton->AutoSize = true;
+			this->SpaceSceneRadioButton->Location = System::Drawing::Point(2, 671);
+			this->SpaceSceneRadioButton->Name = L"SpaceSceneRadioButton";
+			this->SpaceSceneRadioButton->Size = System::Drawing::Size(110, 20);
+			this->SpaceSceneRadioButton->TabIndex = 23;
+			this->SpaceSceneRadioButton->Text = L"Space Scene";
+			this->SpaceSceneRadioButton->UseVisualStyleBackColor = true;
+			this->SpaceSceneRadioButton->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::SpaceSceneRadioButton_CheckedChanged);
+			// 
+			// frequencyTrackBar
+			// 
+			this->frequencyTrackBar->Location = System::Drawing::Point(191, 524);
+			this->frequencyTrackBar->Maximum = 128;
+			this->frequencyTrackBar->Minimum = 1;
+			this->frequencyTrackBar->Name = L"frequencyTrackBar";
+			this->frequencyTrackBar->Size = System::Drawing::Size(326, 56);
+			this->frequencyTrackBar->TabIndex = 24;
+			this->frequencyTrackBar->Value = 4;
+			this->frequencyTrackBar->Scroll += gcnew System::EventHandler(this, &ToolWindow::frequencyTrackBar_Scroll);
+			// 
+			// frequencytextBox
+			// 
+			this->frequencytextBox->AccessibleName = L"";
+			this->frequencytextBox->Location = System::Drawing::Point(523, 524);
+			this->frequencytextBox->Name = L"frequencytextBox";
+			this->frequencytextBox->Size = System::Drawing::Size(47, 22);
+			this->frequencytextBox->TabIndex = 25;
+			// 
+			// textBox4
+			// 
+			this->textBox4->Location = System::Drawing::Point(31, 524);
+			this->textBox4->Name = L"textBox4";
+			this->textBox4->Size = System::Drawing::Size(76, 22);
+			this->textBox4->TabIndex = 26;
+			this->textBox4->Text = L"Frequency";
+			// 
+			// textBox8
+			// 
+			this->textBox8->Location = System::Drawing::Point(31, 579);
+			this->textBox8->Name = L"textBox8";
+			this->textBox8->Size = System::Drawing::Size(76, 22);
+			this->textBox8->TabIndex = 27;
+			this->textBox8->Text = L"Amplitude";
+			// 
+			// amplitudeTrackBar
+			// 
+			this->amplitudeTrackBar->Location = System::Drawing::Point(191, 571);
+			this->amplitudeTrackBar->Maximum = 128;
+			this->amplitudeTrackBar->Minimum = 1;
+			this->amplitudeTrackBar->Name = L"amplitudeTrackBar";
+			this->amplitudeTrackBar->Size = System::Drawing::Size(326, 56);
+			this->amplitudeTrackBar->TabIndex = 28;
+			this->amplitudeTrackBar->Value = 4;
+			this->amplitudeTrackBar->Scroll += gcnew System::EventHandler(this, &ToolWindow::amplitudeTrackBar_scroll);
+			// 
+			// TinBluecheckBox
+			// 
+			this->TinBluecheckBox->AutoSize = true;
+			this->TinBluecheckBox->Location = System::Drawing::Point(31, 645);
+			this->TinBluecheckBox->Name = L"TinBluecheckBox";
+			this->TinBluecheckBox->Size = System::Drawing::Size(81, 20);
+			this->TinBluecheckBox->TabIndex = 29;
+			this->TinBluecheckBox->Text = L"Tint Blue";
+			this->TinBluecheckBox->UseVisualStyleBackColor = true;
+			this->TinBluecheckBox->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::TintBlueButton_CheckedChanged);
+			// 
+			// WireFramecheckBox
+			// 
+			this->WireFramecheckBox->AutoSize = true;
+			this->WireFramecheckBox->Location = System::Drawing::Point(31, 619);
+			this->WireFramecheckBox->Name = L"WireFramecheckBox";
+			this->WireFramecheckBox->Size = System::Drawing::Size(144, 20);
+			this->WireFramecheckBox->TabIndex = 30;
+			this->WireFramecheckBox->Text = L"WireFrame Render";
+			this->WireFramecheckBox->UseVisualStyleBackColor = true;
+			this->WireFramecheckBox->CheckedChanged += gcnew System::EventHandler(this, &ToolWindow::WireFramecheckBox_checkedChanged);
+			// 
+			// amplitudeTextBox
+			// 
+			this->amplitudeTextBox->AccessibleName = L"SpecularB";
+			this->amplitudeTextBox->Location = System::Drawing::Point(523, 579);
+			this->amplitudeTextBox->Name = L"amplitudeTextBox";
+			this->amplitudeTextBox->Size = System::Drawing::Size(47, 22);
+			this->amplitudeTextBox->TabIndex = 31;
 			// 
 			// ToolWindow
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(582, 553);
-			this->Controls->Add(this->MoveCubesToSphereButton);
-			this->Controls->Add(this->button2);
-			this->Controls->Add(this->ColorByPostionRadioButton);
+			this->ClientSize = System::Drawing::Size(582, 700);
+			this->Controls->Add(this->amplitudeTextBox);
+			this->Controls->Add(this->WireFramecheckBox);
+			this->Controls->Add(this->TinBluecheckBox);
+			this->Controls->Add(this->amplitudeTrackBar);
+			this->Controls->Add(this->textBox8);
+			this->Controls->Add(this->textBox4);
+			this->Controls->Add(this->frequencytextBox);
+			this->Controls->Add(this->frequencyTrackBar);
+			this->Controls->Add(this->SpaceSceneRadioButton);
+			this->Controls->Add(this->ScaleCheckBox);
+			this->Controls->Add(this->RotateCheckBox);
+			this->Controls->Add(this->TranslateCheckBox);
+			this->Controls->Add(this->WaterSceneButton);
+			this->Controls->Add(this->ResetTransformButton);
+			this->Controls->Add(this->TransformRadioButton);
 			this->Controls->Add(this->SpecularColorB);
 			this->Controls->Add(this->SpecularColorG);
 			this->Controls->Add(this->SpecularColorBTrackBar);
@@ -378,6 +589,8 @@ namespace InitOpenGL {
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpecularRtrackBar))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpecularGTrackBar))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->SpecularColorBTrackBar))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->frequencyTrackBar))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->amplitudeTrackBar))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -396,6 +609,5 @@ private: System::Void textBox3_TextChanged(System::Object^ sender, System::Event
 }
 private: System::Void trackBar1_Scroll(System::Object^ sender, System::EventArgs^ e) {
 }
-
 };
 }

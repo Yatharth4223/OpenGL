@@ -25,6 +25,7 @@ GameController::~GameController()
 }
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+void mouseMoveCallback(GLFWwindow* window, double xpos, double ypos);
 
 void GameController::Initialize()
 {
@@ -70,7 +71,10 @@ void GameController::RunGame()
 	
 	m_shaderPost = Shader();
 	m_shaderPost.LoadShaders("Postprocessor.vertexshader", "Postprocessor.fragmentshader");
-	
+
+	m_shaderWater = Shader();
+	m_shaderWater.LoadShaders("Water.vertexshader", "Water.fragmentshader");
+
 	//shader for font
 	m_shaderFont = Shader();
 	m_shaderFont.LoadShaders("Font.vertexshader", "Font.fragmentshader");
@@ -80,7 +84,7 @@ void GameController::RunGame()
 	if (InitOpenGL::ToolWindow::isMovingLight)
 	{
 		Mesh light = Mesh();
-		light.Create(&m_shaderColor, "./Assets/Models/Exercise2/Sphere.obj");
+		light.Create(&m_shaderColor, "./Assets/Models/FinalProjectAssets/Sphere.obj");
 		light.SetPosition({ 0.0f, 0.0f, 0.1f });
 		light.SetColor({ 1.0f, 1.0f, 1.0f });
 		light.SetScale({ 0.1f,0.1f,0.1f });
@@ -88,28 +92,63 @@ void GameController::RunGame()
 		Mesh::Lights.push_back(light);
 
 		Mesh box = Mesh();
-		box.Create(&m_shaderMoveLight, "./Assets/Models/Exercise2/Teapot.obj");
+		box.Create(&m_shaderMoveLight, "./Assets/Models/FinalProjectAssets/Fighter.ase");
 		box.SetCameraPosition(m_camera.GetPosition());
-		box.SetScale({ 0.5f,0.5f,0.5f });
+		box.SetScale({ 0.008f,0.008f,0.008f });
 		box.SetPosition({ 0.0f, 0.0f, 0.0f });
 		box.isVisible = true;
 		Mesh::m_meshes.push_back(box);
 	}
-	else if(InitOpenGL::ToolWindow::isColoringByPosition)
+	else if(InitOpenGL::ToolWindow::isTransforming)
 	{
-		for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
+		if (InitOpenGL::ToolWindow::isTranslating)
 		{
-			Mesh::m_meshes[count].Cleanup();
+			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
+			{
+				Mesh::m_meshes[count].Cleanup();
+			}
+
+			Mesh box = Mesh();
+			box.Create(&m_shaderColorByPosition, "./Assets/Models/FinalProjectAssets/Fighter.ase");
+			box.SetCameraPosition(m_camera.GetPosition());
+			box.SetScale({ 0.008f,0.008f,0.008f });
+			box.SetPosition({ 0.0f, 0.0f, 0.0f });
+			box.isVisible = true;
+			Mesh::m_meshes.push_back(box);
 		}
-		Mesh box = Mesh();
-		box.Create(&m_shaderMoveLight, "./Assets/Models/Exercise2/Teapot.obj");
-		box.SetCameraPosition(m_camera.GetPosition());
-		box.SetScale({ 0.5f,0.5f,0.5f });
-		box.SetPosition({ 0.0f, 0.0f, 0.0f });
-		box.isVisible = true;
-		Mesh::m_meshes.push_back(box);
+		else if (InitOpenGL::ToolWindow::isRotating)
+		{
+			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
+			{
+				Mesh::m_meshes[count].Cleanup();
+			}
+
+			Mesh box = Mesh();
+			box.Create(&m_shaderColorByPosition, "./Assets/Models/FinalProjectAssets/Fighter.ase");
+			box.SetCameraPosition(m_camera.GetPosition());
+			box.SetScale({ 0.008f,0.008f,0.008f });
+			box.SetPosition({ 0.0f, 0.0f, 0.0f });
+			box.isVisible = true;
+			Mesh::m_meshes.push_back(box);
+		}
+		else
+		{
+			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
+			{
+				Mesh::m_meshes[count].Cleanup();
+			}
+
+			Mesh box = Mesh();
+			box.Create(&m_shaderColorByPosition, "./Assets/Models/FinalProjectAssets/Fighter.ase");
+			box.SetCameraPosition(m_camera.GetPosition());
+			box.SetScale({ 0.008f,0.008f,0.008f });
+			box.SetPosition({ 0.0f, 0.0f, 0.0f });
+			box.isVisible = true;
+			Mesh::m_meshes.push_back(box);
+		}
+
 	}
-	else 
+	else if(InitOpenGL::ToolWindow::isWaterScene)
 	{
 		for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
 		{
@@ -117,20 +156,22 @@ void GameController::RunGame()
 		}
 
 		Mesh box = Mesh();
-		box.Create(&m_MoveToSphere, "./Assets/Models/Exercise2/SphereCube.obj");
+		box.Create(&m_shaderWater, "./Assets/Models/FinalProjectAssets/Fish.obj");
 		box.SetCameraPosition(m_camera.GetPosition());
 		box.SetScale({ 0.5f,0.5f,0.5f });
 		box.SetPosition({ 0.0f, 0.0f, 0.0f });
 		box.isVisible = true;
 		Mesh::m_meshes.push_back(box);
-
-		//Mesh box = Mesh();
-		//box.Create(&m_MoveToSphere, "./Assets/Models/Exercise2/Cube.obj", "Cube");
-		//box.SetCameraPosition(m_camera.GetPosition());
-		//box.SetScale({ 0.5f,0.5f,0.5f });
-		//box.SetPosition({ 0.0f, 0.0f, 0.0f });
-		//box.isVisible = true;
-		//Mesh::m_meshes.push_back(box);
+	}
+	else
+	{
+		Skybox box = Skybox();
+		box.Create(&m_shaderSkybox, "./Assets/Models/FinalProjectAssets/Fish.obj");
+		box.SetCameraPosition(m_camera.GetPosition());
+		box.SetScale({ 0.5f,0.5f,0.5f });
+		box.SetPosition({ 0.0f, 0.0f, 0.0f });
+		box.isVisible = true;
+		Mesh::m_meshes.push_back(box);
 	}
 	
 #pragma endregion CreateMeshes
@@ -175,14 +216,14 @@ void GameController::RunGame()
 			m_postProcessor.End();
 
 		}
-		else if (InitOpenGL::ToolWindow::isColoringByPosition)
+		else if (InitOpenGL::ToolWindow::isTransforming)
 		{
 			glfwSetMouseButtonCallback(win, mouse_button_callback);
 
-			if (InitOpenGL::ToolWindow::resetTeapotPosition)
+			if (InitOpenGL::ToolWindow::resetTransform)
 			{
 				Mesh::m_meshes[0].SetPosition({ 0.0f, 0.0f, 0.0f });
-				InitOpenGL::ToolWindow::resetTeapotPosition = false;
+				InitOpenGL::ToolWindow::resetTransform = false;
 			}
 			m_postProcessor.Start();
 			glm::mat4 view = glm::mat4(glm::mat3(m_camera.GetView()));
@@ -295,6 +336,8 @@ void GameController::RunGame()
 
 void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mods)
 {
+
+
 	if (_button == GLFW_MOUSE_BUTTON_LEFT && _action == GLFW_PRESS) {
 
 		if(InitOpenGL::ToolWindow::isMovingCubesToSpheres)
@@ -347,7 +390,7 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 				}
 				else
 				{
-					double radian = atan2(dx, dy);
+					double radian = atan2(dy, dx);
 					lightPosX += cos(radian) * speed;
 					lightPosY += sin(radian) * speed; // 0.1 * 398
 				}
@@ -355,7 +398,7 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 				Mesh::Lights[0].SetPosition({ lightPosX,lightPosY,lightPosZ });
 
 			}
-			else if (InitOpenGL::ToolWindow::isColoringByPosition)
+			else if (InitOpenGL::ToolWindow::isTransforming)
 			{
 				float ObjectPosX = Mesh::m_meshes[0].GetPosition().x; //0
 				float ObjectPosY = Mesh::m_meshes[0].GetPosition().y; //0
@@ -372,7 +415,7 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 				}
 				else
 				{
-					float radian = atan2(dx, dy);
+					float radian = atan2(dy, dx);
 					ObjectPosX += cos(radian) * speed;
 					ObjectPosY += sin(radian) * speed; // 0.1 * 398
 				}
@@ -384,4 +427,19 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 	}
 }
 
+void mouseMoveCallback(GLFWwindow* window, double xpos, double ypos) {
+	int deltaX = static_cast<int>(xpos - prevMouseX);
+	int deltaY = static_cast<int>(ypos - prevMouseY);
 
+	if (leftMouseButton) {
+		translationX += static_cast<float>(deltaX) / windowWidth;
+		translationY -= static_cast<float>(deltaY) / windowHeight;
+	}
+
+	if (middleMouseButton) {
+		translationZ -= static_cast<float>(deltaY) / windowHeight;
+	}
+
+	prevMouseX = xpos;
+	prevMouseY = ypos;
+}
