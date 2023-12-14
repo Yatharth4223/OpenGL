@@ -137,7 +137,6 @@ void Mesh::Create(Shader* _shader, string _file, int _instanceCount)
 	}
 	else
 	{
-
 		objl::Loader Loader;
 		M_ASSERT(Loader.LoadFile(_file) == true, "Failed to load mesh.");
 

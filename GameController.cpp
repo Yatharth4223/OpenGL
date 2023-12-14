@@ -93,7 +93,7 @@ void GameController::RunGame()
 	if (InitOpenGL::ToolWindow::isMovingLight)
 	{
 		Mesh light = Mesh();
-		light.Create(&m_shaderColor, "./Assets/Models/FinalProjectAssets/Sphere.obj");
+		light.Create(&m_shaderColor, "./Assets/Models/Exercise2/Sphere.obj");
 		light.SetPosition({ 0.0f, 0.0f, 0.1f });
 		light.SetColor({ 1.0f, 1.0f, 1.0f });
 		light.SetScale({ 0.1f,0.1f,0.1f });
