@@ -7,7 +7,7 @@
 Shader GameController::m_MoveToSphere;
 Camera GameController::m_camera;
 vector<Mesh> GameController::boxes;
-double lastTime = glfwGetTime();
+double lastTime;
 
 GameController::GameController()
 {
@@ -52,7 +52,7 @@ void GameController::Initialize()
 	srand((unsigned int)time(0));
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
-
+	lastTime = glfwGetTime();
 	Resolution r = WindowController::GetInstance().GetResolution();
 	glViewport(0, 0, r.m_width, r.m_height);
 	m_camera = Camera(r);

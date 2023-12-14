@@ -41,6 +41,17 @@ namespace InitOpenGL {
 		static bool isSpaceScene = false;
 
 	public:
+		ToolWindow(void)
+		{
+			InitializeComponent();
+			SpecularStrengthReading->Text = SpecularStrengthTrackBar->Value.ToString();
+			SpecularColorR->Text = SpecularRtrackBar->Value.ToString();
+			SpecularColorG->Text = SpecularGTrackBar->Value.ToString();
+			SpecularColorB->Text = SpecularColorBTrackBar->Value.ToString();
+
+			frequencytextBox->Text = frequencyTrackBar->Value.ToString();
+			amplitudeTextBox->Text = amplitudeTrackBar->Value.ToString();
+		}
 
 	private: System::Windows::Forms::CheckBox^ TranslateCheckBox;
 	private: System::Windows::Forms::CheckBox^ RotateCheckBox;
@@ -58,21 +69,10 @@ namespace InitOpenGL {
 	private: System::Windows::Forms::CheckBox^ WireFramecheckBox;
 	private: System::Windows::Forms::TextBox^ amplitudeTextBox;
 
-	private: System::Windows::Forms::CheckBox^ TranslateCheckBox;
 
 
 
-		ToolWindow(void)
-		{
-			InitializeComponent();
-			SpecularStrengthReading->Text = SpecularStrengthTrackBar->Value.ToString();
-			SpecularColorR->Text = SpecularRtrackBar->Value.ToString();
-			SpecularColorG->Text = SpecularGTrackBar->Value.ToString();
-			SpecularColorB->Text = SpecularColorBTrackBar->Value.ToString();
 
-			frequencytextBox->Text = frequencyTrackBar->Value.ToString();
-			amplitudeTextBox->Text = amplitudeTrackBar->Value.ToString();
-		}
 
 	protected:
 		/// <summary>
