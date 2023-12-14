@@ -7,7 +7,7 @@
 Shader GameController::m_MoveToSphere;
 Camera GameController::m_camera;
 vector<Mesh> GameController::boxes;
-double lastTime;
+double GameController::lastTime;
 
 GameController::GameController()
 {
@@ -52,6 +52,7 @@ void GameController::Initialize()
 	srand((unsigned int)time(0));
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
+
 	lastTime = glfwGetTime();
 	Resolution r = WindowController::GetInstance().GetResolution();
 	glViewport(0, 0, r.m_width, r.m_height);
@@ -62,7 +63,7 @@ void GameController::RunGame()
 {
 	//Show the C++/CLI tool window
 	InitOpenGL::ToolWindow^ window = gcnew InitOpenGL::ToolWindow();
-	window->Show();
+	window->Hide();
 
 #pragma region SetupShaders
 	//Create and compile our GLSL program from the shaders
@@ -74,12 +75,6 @@ void GameController::RunGame()
 	m_shaderMoveLight = Shader();
 	m_shaderMoveLight.LoadShaders("Movelight.vertexshader", "Movelight.fragmentshader");
 	
-	//m_shaderColorByPosition = Shader();
-	//m_shaderColorByPosition.LoadShaders("ColorByPosition.vertexshader", "ColorByPosition.fragmentshader");
-
-	//m_MoveToSphere = Shader();
-	//m_shaderColorByPosition.LoadShaders("MoveToSphere.vertexshader", "MoveToSphere.fragmentshader");
-
 	m_shaderSkybox = Shader();
 	m_shaderColorByPosition.LoadShaders("Skybox.vertexshader", "Skybox.fragmentshader");
 	
@@ -106,7 +101,7 @@ void GameController::RunGame()
 		Mesh::Lights.push_back(light);
 
 		Mesh box = Mesh();
-		box.Create(&m_shaderMoveLight, "./Assets/Models/FinalProjectAssets/Fighter.ase");
+		box.Create(&m_shaderMoveLight, "./Assets/Models/FinalProjectAssets/Fighter.obj");
 		box.SetCameraPosition(m_camera.GetPosition());
 		box.SetScale({ 0.008f,0.008f,0.008f });
 		box.SetPosition({ 0.0f, 0.0f, 0.0f });
@@ -165,11 +160,11 @@ void GameController::RunGame()
 #pragma region CreateFonts
 	Fonts f = Fonts();
 	f.Create(&m_shaderFont, "arial.ttf", 100);
-	m_postProcessor = PostProcessor();
-	m_postProcessor.Create(&m_shaderPost);
-	GLFWwindow* win = WindowController::GetInstance().GetWindow();
-
 #pragma endregion CreateFonts
+
+	m_postProcessor = PostProcessor();
+	m_postProcessor.Create(&m_shaderWater);
+	GLFWwindow* win = WindowController::GetInstance().GetWindow();
 
 #pragma region Render
 	int fps = 0;
@@ -317,10 +312,10 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 		else 
 		{
 			double mouseX, mouseY;
-			glfwGetCursorPos(window, &mouseX, &mouseY); // 10 10
+			glfwGetCursorPos(window, &mouseX, &mouseY); 
 
-			int screenWidth = WindowController::GetInstance().GetResolution().m_width; //800
-			int screenHeight = WindowController::GetInstance().GetResolution().m_height; //600
+			int screenWidth = WindowController::GetInstance().GetResolution().m_width; 
+			int screenHeight = WindowController::GetInstance().GetResolution().m_height; 
 
 			mouseX = mouseX - screenWidth / 2;
 			mouseY = -mouseY + screenHeight / 2;
