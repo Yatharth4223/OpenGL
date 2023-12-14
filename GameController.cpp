@@ -201,7 +201,11 @@ void GameController::RunGame()
 		{
 			glfwSetMouseButtonCallback(win, mouse_button_callback);
 			glfwSetCursorPosCallback(win, mouseMoveCallback);
-
+			Mesh::Lights[0].SetPosition({ -30,5,0.1 });
+			for (unsigned int count = 0; count < Mesh::Lights.size(); count++)
+			{
+				Mesh::Lights[count].Render(m_camera.GetProjection() * m_camera.GetView());
+			}
 			if (InitOpenGL::ToolWindow::resetTransform)
 			{
 				Mesh::m_meshes[0].SetPosition({ 0.0f, 0.0f, 0.0f });
@@ -308,23 +312,7 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 
 		if(InitOpenGL::ToolWindow::isSpaceScene)
 		{
-			std::random_device rd;
-			std::mt19937 gen(rd()); // Mersenne Twister engine
-			std::uniform_real_distribution<float> dis(-20.0f, 20.0f);
 
-			float x = dis(gen);
-			float y = dis(gen);
-			float z = dis(gen);
-
-	#pragma region Adding A Box
-			Mesh box = Mesh();
-			box.Create(&GameController::m_MoveToSphere, "./Assets/Models/Exercise2/Cube.obj", "Cube");
-			box.SetCameraPosition(GameController::m_camera.GetPosition());
-			box.SetScale({ 0.1f,0.1f,0.1f });
-			box.SetPosition({ x, y, z });
-			box.isVisible = true;
-			GameController::boxes.push_back(box);
-	#pragma endregion Adding A Box
 		}
 		else 
 		{
@@ -337,7 +325,7 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 			mouseX = mouseX - screenWidth / 2;
 			mouseY = -mouseY + screenHeight / 2;
 
-			float speed = 1.2f;  // Adjust the speed as needed
+			float speed = 1.2f;  
 
 
 			if (InitOpenGL::ToolWindow::isMovingLight)
@@ -373,7 +361,7 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 				GLfloat dx = mouseX - ObjectPosX; // 10
 				GLfloat dy = mouseY - ObjectPosY; // 10
 
-				float speed = 1.2f;  // Adjust the speed as needed
+				float speed = 1.2f;  
 				if (sqrt(dy * dy + dx * dx) < speed)
 				{
 					ObjectPosX = mouseX;
@@ -425,9 +413,9 @@ void mouseMoveCallback(GLFWwindow* window, double xpos, double ypos) {
 	else
 	{
 		if (leftMouseButton) {
-			// Scale the model based on mouse movement
-			scaleXY += static_cast<float>(deltaY) * 0.01f;  // Adjust the multiplier as needed
-			scaleZ += static_cast<float>(deltaY) * 0.01f;    // Adjust the multiplier as needed
+			// Scaling the model based on mouse movement
+			scaleXY += static_cast<float>(deltaY) * 0.01f;  
+			scaleZ += static_cast<float>(deltaY) * 0.01f;    
 		}
 	}
 	prevMouseX = xpos;
