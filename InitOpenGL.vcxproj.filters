@@ -121,5 +121,7 @@
     <None Include="MoveToSphere.fragmentshader" />
     <None Include="Postprocessor.fragmentshader" />
     <None Include="Postprocessor.vertexshader" />
+    <None Include="Water.vertexshader" />
+    <None Include="Water.fragmentshader" />
   </ItemGroup>
 </Project>

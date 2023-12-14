@@ -18,6 +18,7 @@ public:
 	static Shader m_MoveToSphere;
 	static Camera m_camera;
 	static vector<Mesh> boxes;
+	static double lastTime;
 
 	//Methods
 	void Initialize();

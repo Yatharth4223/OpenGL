@@ -7,6 +7,7 @@
 Shader GameController::m_MoveToSphere;
 Camera GameController::m_camera;
 vector<Mesh> GameController::boxes;
+double lastTime = glfwGetTime();
 
 GameController::GameController()
 {
@@ -73,11 +74,11 @@ void GameController::RunGame()
 	m_shaderMoveLight = Shader();
 	m_shaderMoveLight.LoadShaders("Movelight.vertexshader", "Movelight.fragmentshader");
 	
-	m_shaderColorByPosition = Shader();
-	m_shaderColorByPosition.LoadShaders("ColorByPosition.vertexshader", "ColorByPosition.fragmentshader");
+	//m_shaderColorByPosition = Shader();
+	//m_shaderColorByPosition.LoadShaders("ColorByPosition.vertexshader", "ColorByPosition.fragmentshader");
 
-	m_MoveToSphere = Shader();
-	m_shaderColorByPosition.LoadShaders("MoveToSphere.vertexshader", "MoveToSphere.fragmentshader");
+	//m_MoveToSphere = Shader();
+	//m_shaderColorByPosition.LoadShaders("MoveToSphere.vertexshader", "MoveToSphere.fragmentshader");
 
 	m_shaderSkybox = Shader();
 	m_shaderColorByPosition.LoadShaders("Skybox.vertexshader", "Skybox.fragmentshader");
@@ -114,51 +115,17 @@ void GameController::RunGame()
 	}
 	else if(InitOpenGL::ToolWindow::isTransforming)
 	{
-		if (InitOpenGL::ToolWindow::isTranslating)
+		for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
 		{
-			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
-			{
-				Mesh::m_meshes[count].Cleanup();
-			}
-
-			Mesh box = Mesh();
-			box.Create(&m_shaderColorByPosition, "./Assets/Models/FinalProjectAssets/Fighter.ase");
-			box.SetCameraPosition(m_camera.GetPosition());
-			box.SetScale({ 0.008f,0.008f,0.008f });
-			box.SetPosition({ 0.0f, 0.0f, 0.0f });
-			box.isVisible = true;
-			Mesh::m_meshes.push_back(box);
+			Mesh::m_meshes[count].Cleanup();
 		}
-		else if (InitOpenGL::ToolWindow::isRotating)
-		{
-			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
-			{
-				Mesh::m_meshes[count].Cleanup();
-			}
-
-			Mesh box = Mesh();
-			box.Create(&m_shaderColorByPosition, "./Assets/Models/FinalProjectAssets/Fighter.ase");
-			box.SetCameraPosition(m_camera.GetPosition());
-			box.SetScale({ 0.008f,0.008f,0.008f });
-			box.SetPosition({ 0.0f, 0.0f, 0.0f });
-			box.isVisible = true;
-			Mesh::m_meshes.push_back(box);
-		}
-		else
-		{
-			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
-			{
-				Mesh::m_meshes[count].Cleanup();
-			}
-
-			Mesh box = Mesh();
-			box.Create(&m_shaderColorByPosition, "./Assets/Models/FinalProjectAssets/Fighter.ase");
-			box.SetCameraPosition(m_camera.GetPosition());
-			box.SetScale({ 0.008f,0.008f,0.008f });
-			box.SetPosition({ 0.0f, 0.0f, 0.0f });
-			box.isVisible = true;
-			Mesh::m_meshes.push_back(box);
-		}
+		Mesh box = Mesh();
+		box.Create(&m_shaderColorByPosition, "./Assets/Models/FinalProjectAssets/Fighter.ase");
+		box.SetCameraPosition(m_camera.GetPosition());
+		box.SetScale({ 0.008f,0.008f,0.008f });
+		box.SetPosition({ 0.0f, 0.0f, 0.0f });
+		box.isVisible = true;
+		Mesh::m_meshes.push_back(box);
 
 	}
 	else if(InitOpenGL::ToolWindow::isWaterScene)
@@ -178,6 +145,11 @@ void GameController::RunGame()
 	}
 	else
 	{
+		for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
+		{
+			Mesh::m_meshes[count].Cleanup();
+		}
+
 		Skybox skybox = Skybox();
 		skybox.Create(&m_shaderSkybox, "./Assets/Models/FinalProjectAssets/Skybox.obj",
 			{ "./Assets/Textures/FinalProjectAssets/Skybox/right.jpg",
@@ -199,9 +171,7 @@ void GameController::RunGame()
 
 #pragma endregion CreateFonts
 
-
 #pragma region Render
-	double lastTime = glfwGetTime();
 	int fps = 0;
 	string fpsS = "0";
 	do
@@ -217,7 +187,6 @@ void GameController::RunGame()
 				Mesh::Lights[0].SetPosition({ 0.0f, 0.0f, 0.1f });
 				InitOpenGL::ToolWindow::resetLightPosition = false;
 			}
-			m_postProcessor.Start();
 			glm::mat4 view = glm::mat4(glm::mat3(m_camera.GetView()));
 			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
 			{
@@ -227,8 +196,6 @@ void GameController::RunGame()
 			{
 				Mesh::Lights[count].Render(m_camera.GetProjection() * m_camera.GetView());
 			}
-			m_postProcessor.End();
-
 		}
 		else if (InitOpenGL::ToolWindow::isTransforming)
 		{
@@ -240,7 +207,25 @@ void GameController::RunGame()
 				Mesh::m_meshes[0].SetPosition({ 0.0f, 0.0f, 0.0f });
 				InitOpenGL::ToolWindow::resetTransform = false;
 			}
+
+			glm::mat4 view = glm::mat4(glm::mat3(m_camera.GetView()));
+			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
+			{
+				Mesh::m_meshes[count].Render(m_camera.GetProjection() * m_camera.GetView());
+			}
+		}
+		else if (InitOpenGL::ToolWindow::isWaterScene)
+		{
+			glfwSetMouseButtonCallback(win, mouse_button_callback);
+			glfwSetCursorPosCallback(win, mouseMoveCallback);
+			
 			m_postProcessor.Start();
+			if (InitOpenGL::ToolWindow::resetTransform)
+			{
+				Mesh::m_meshes[0].SetPosition({ 0.0f, 0.0f, 0.0f });
+				InitOpenGL::ToolWindow::resetTransform = false;
+			}
+
 			glm::mat4 view = glm::mat4(glm::mat3(m_camera.GetView()));
 			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
 			{
@@ -249,20 +234,13 @@ void GameController::RunGame()
 			m_postProcessor.End();
 
 		}
+		//This is the skybox code
 		else {
 
 			for (unsigned int count = 0; count < Mesh::m_meshes.size(); count++)
 			{
 				Mesh::m_meshes[count].Cleanup();
 			}
-
-			Mesh box = Mesh();
-			box.Create(&m_MoveToSphere, "./Assets/Models/Exercise2/SphereCube.obj");
-			box.SetCameraPosition(m_camera.GetPosition());
-			box.SetScale({ 0.5f,0.5f,0.5f });
-			box.SetPosition({ 0.0f, 0.0f, 0.0f });
-			box.isVisible = true;
-			Mesh::m_meshes.push_back(box);
 
 			glfwSetMouseButtonCallback(win, mouse_button_callback);
 
@@ -291,15 +269,20 @@ void GameController::RunGame()
 				GameController::boxes[count].Render(m_camera.GetProjection() * m_camera.GetView());
 			}
 		}
+
 		f.RenderText(fpsS, 100, 100, 0.5f, { 1.0f, 1.0f, 0.0f });
 
 		glfwSwapBuffers(WindowController::GetInstance().GetWindow()); //Swap the front and back buffers
 		glfwPollEvents();
+		lastTime += 0.01f;
+
 	} 
 	while (glfwGetKey(WindowController::GetInstance().GetWindow(), GLFW_KEY_ESCAPE) != GLFW_PRESS && 
 		glfwWindowShouldClose(WindowController::GetInstance().GetWindow()) == 0);
+
 #pragma endregion Render
 
+#pragma region Cleanup
 	for (unsigned int count = 0; count < Mesh::Lights.size(); count++)
 	{
 		Mesh::Lights[count].Cleanup();
@@ -314,6 +297,8 @@ void GameController::RunGame()
 	m_shaderColor.Cleanup();
 	m_shaderMoveLight.Cleanup();
 	m_shaderSkybox.Cleanup();
+
+#pragma endregion Cleanup
 }
 
 void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mods)
@@ -340,10 +325,6 @@ void mouse_button_callback(GLFWwindow* window, int _button, int _action, int _mo
 			box.isVisible = true;
 			GameController::boxes.push_back(box);
 	#pragma endregion Adding A Box
-		}
-		else if (InitOpenGL::ToolWindow::isWaterScene)
-		{
-
 		}
 		else 
 		{

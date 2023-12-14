@@ -4,12 +4,12 @@
 #include "ToolWindow.h"
 #include <msclr/marshal_cppstd.h>
 #include "ASEMesh.h"
+#include "GameController.h"
 
 using namespace ASEMeshes;
 
 vector<Mesh> Mesh::Lights;
 vector<Mesh> Mesh::m_meshes;
-
 
 Mesh::Mesh()
 {
@@ -416,14 +416,10 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 			m_shader->SetFloat(Concat("light[", i, "].coneAngle").c_str(), glm::radians(5.0f));
 			m_shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 200);
 		}
-	}
-	else if (InitOpenGL::ToolWindow::isTransforming)
-	{
-		m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_textureDiffuse.GetTexture());
-		m_shader->SetTextureSampler("material.specularTexture", GL_TEXTURE1, 1, m_textureSpecular.GetTexture());
-	}
+		m_shader->SetFloat("material.specularStrength", InitOpenGL::ToolWindow::specularStrength);
 
-	else
+	}
+	else if(InitOpenGL::ToolWindow::isTransforming)
 	{
 		for (unsigned int i = 0; i < Lights.size(); i++)
 		{
@@ -441,8 +437,36 @@ void Mesh::SetShaderVariables(glm::mat4 _pv)
 			m_shader->SetFloat(Concat("light[", i, "].coneAngle").c_str(), glm::radians(5.0f));
 			m_shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 200);
 		}
+
 		m_shader->SetFloat("material.specularStrength", 8);
 
+	}
+
+	else if (InitOpenGL::ToolWindow::isWaterScene)
+	{
+		for (unsigned int i = 0; i < Lights.size(); i++)
+		{
+			//configure Light
+			m_shader->SetFloat(Concat("light[", i, "].constant").c_str(), 1.0f);
+			m_shader->SetFloat(Concat("light[", i, "].linear").c_str(), 0.09f);
+			m_shader->SetFloat(Concat("light[", i, "].quadratic").c_str(), 0.032f);
+
+			m_shader->SetVec3(Concat("light[", i, "].ambientColor").c_str(), { 0.1f, 0.1f, 0.1f });
+			m_shader->SetVec3(Concat("light[", i, "].diffuseColor").c_str(), Lights[i].GetColor());
+			m_shader->SetVec3(Concat("light[", i, "].specularColor").c_str(), { 3.0f, 3.0f, 3.0f });
+
+			m_shader->SetVec3(Concat("light[", i, "].position").c_str(), Lights[i].GetPosition());
+			m_shader->SetVec3(Concat("light[", i, "].direction").c_str(), glm::normalize(glm::vec3({ 0.0f + i * 0.1f, 0, 0.0f + i * 0.1f }) - Lights[i].GetPosition()));
+			m_shader->SetFloat(Concat("light[", i, "].coneAngle").c_str(), glm::radians(5.0f));
+			m_shader->SetFloat(Concat("light[", i, "].falloff").c_str(), 200);
+		}
+
+		m_shader->SetFloat("material.specularStrength", 8);
+		m_shader->SetFloat("material.time", GameController::lastTime);
+		m_shader->SetFloat("material.frequency", InitOpenGL::ToolWindow::frequency);
+		m_shader->SetFloat("material.amplitude", InitOpenGL::ToolWindow::amplitude);
+		m_shader->SetInt("material.isBlueTint", InitOpenGL::ToolWindow::isBlueTint);
+		m_shader->SetInt("material.isWireFrame", InitOpenGL::ToolWindow::isWireFrameRender);
 	}
 
 	m_shader->SetTextureSampler("material.diffuseTexture", GL_TEXTURE0, 0, m_textureDiffuse.GetTexture());

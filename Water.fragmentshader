@@ -1,0 +1,28 @@
+    #version 330 core
+    out vec4 FragColor;
+
+    uniform float time;
+    uniform bool wireframe;
+    uniform bool tintBlue;
+    uniform float frequency;
+    uniform float amplitude;
+    
+    void main() {
+        vec2 uv = gl_FragCoord.xy / vec2(800.0, 600.0);
+        float sineWave = sin(uv.x * frequency + time) * amplitude;
+        vec2 offset = vec2(sineWave, 0.0);
+
+        if (wireframe) {
+            float lines = step(0.002, fract(uv.x * 10.0));
+            FragColor = vec4(1.0, 1.0, 1.0, lines);
+        } else {
+            vec4 color = texture(someTexture, uv + offset);
+            
+            if (tintBlue) {
+                color.r /= 2.0;
+                color.g /= 2.0;
+            }
+            
+            FragColor = color;
+        }
+    }
